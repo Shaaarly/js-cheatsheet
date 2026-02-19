@@ -1,9 +1,2 @@
 // 12-promises — Ejercicio 1
-// Promesa que resuelve en 1s con \"listo\"; .then(console.log)
-
-const promesa = new Promise((resolve) => {
-    setTimeout(() => {
-        resolve("Listo");
-    }
-    , 1000)
-}).then(console.log)
+// Crea una promesa que se resuelva al cabo de 1 segundo con el valor "listo". Usa .then() para imprimirlo.
