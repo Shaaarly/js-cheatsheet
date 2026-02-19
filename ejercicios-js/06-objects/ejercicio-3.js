@@ -2,3 +2,9 @@
 //
 // --- Datos de partida ---
 const obj = { id: 99, nombre: "Test", activo: true };
+
+
+const { id, ...resto } = obj
+const sinId = resto
+
+console.log(sinId)

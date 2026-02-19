@@ -20,13 +20,15 @@
 
 ## 1. fetch básico y métodos HTTP
 
-**fetch(url, options?)**: devuelve una **Promise** que se cumple con un objeto **Response**. No rechaza por 404/500; hay que comprobar `response.ok` o `response.status`.
+**fetch(url, options?)**: devuelve una **Promise** que se cumple con un objeto **Response**. No rechaza por 404/500; hay que comprobar `response.ok` o `response.status`. Solo rechaza por fallo de red (sin conexión, CORS bloqueado, etc.).
 
 - **GET**: por defecto (sin body). Para leer recursos.
 - **POST**: crear recurso. Body en options.
 - **PUT**: reemplazar recurso. Body en options.
 - **PATCH**: actualización parcial. Body en options.
 - **DELETE**: eliminar. Normalmente sin body.
+
+**Ciclo típico:** 1) `fetch(url)` → promesa que se cumple con un `Response`; 2) comprobar `res.ok` o `res.status`; 3) leer el body una sola vez con `res.json()`, `res.text()` o `res.blob()`.
 
 ```js
 const res = await fetch("/api/pedidos");
@@ -87,6 +89,8 @@ async function api(url, options = {}) {
 ```
 
 **Casos reales**: 200 OK datos; 201 Created con Location; 400 Bad Request validación; 401 Unauthorized; 404 Not Found; 500 Server Error.
+
+**Orden correcto:** Comprobar `res.ok` (o `res.status`) **antes** de parsear el body. Si el servidor devuelve 404 con HTML, `res.json()` puede lanzar. Patrón seguro: `if (!res.ok) throw new Error(res.status); return res.json();` o parsear en try y luego comprobar ok.
 
 ---
 
@@ -171,6 +175,17 @@ async function fetchConReintento(url, max = 3) {
 5. Obtén la segunda página de resultados (page=2, limit=10) de una API que use query params.
 6. Escribe un helper `api(method, path, body?)` que envíe Content-Type application/json, haga el fetch y devuelva el JSON si ok, o lance si no.
 
+### Ejercicios con PokeAPI (fetch + datos reales)
+
+La **[PokeAPI](https://pokeapi.co/)** es una API REST pública, sin API key. Base: `https://pokeapi.co/api/v2/`. Ideal para practicar fetch con datos reales. Endpoints útiles: `GET .../pokemon?limit=20&offset=0` (lista con `results`: `[{ name, url }]`); `GET .../pokemon/1/` o `.../pokemon/pikachu` (Pokémon completo: id, name, types, stats, sprites, etc.).
+
+7. **GET y res.ok**: haz fetch a `https://pokeapi.co/api/v2/pokemon/25/`. Si `res.ok`, parsea JSON y muestra `name` y `height`; si no, muestra `res.status` y `res.statusText`.
+8. **Query params**: obtén los primeros 10 Pokémon con `.../pokemon?limit=10&offset=0`. Comprueba que la respuesta tiene `count`, `results` y que cada elemento de `results` tiene `name` y `url`.
+9. **Headers**: haz el mismo GET a `.../pokemon/1/` pero añadiendo en options `headers: { "Accept": "application/json" }`. (PokeAPI acepta JSON por defecto; sirve para acostumbrarte a enviar headers.)
+10. **Timeout con AbortController**: función `fetchPokemonConTimeout(id, ms)` que haga GET a `.../pokemon/{id}/` con timeout de `ms`; si expira, rechaza con `Error("Timeout")`. Usa AbortController + setTimeout + signal.
+11. **Paginación**: obtén la "página 2" de Pokémon (los siguientes 20 después de los primeros 20). Usa `offset=20&limit=20`. Muestra los nombres del array `results`.
+12. **Helper para PokeAPI**: función `pokeApi(path)` que haga GET a `https://pokeapi.co/api/v2/${path}`, compruebe `res.ok`, devuelva `res.json()` o lance `Error(res.status)`. Ejemplo de uso: `pokeApi("pokemon/1")` o `pokeApi("pokemon?limit=5")`.
+
 ---
 
 ## 9. Soluciones
@@ -241,6 +256,86 @@ async function api(method, path, body) {
   if (!res.ok) throw new Error(res.status);
   return res.json();
 }
+```
+</details>
+
+<details>
+<summary>7. PokeAPI: GET y res.ok (nombre y height)</summary>
+
+```js
+const res = await fetch("https://pokeapi.co/api/v2/pokemon/25/");
+if (res.ok) {
+  const data = await res.json();
+  console.log(data.name, data.height);
+} else {
+  console.log(res.status, res.statusText);
+}
+```
+</details>
+
+<details>
+<summary>8. PokeAPI: query params limit/offset</summary>
+
+```js
+const res = await fetch("https://pokeapi.co/api/v2/pokemon?limit=10&offset=0");
+const data = await res.json();
+console.log(data.count, data.results); // results[].name, results[].url
+```
+</details>
+
+<details>
+<summary>9. PokeAPI: headers Accept</summary>
+
+```js
+const res = await fetch("https://pokeapi.co/api/v2/pokemon/1/", {
+  headers: { Accept: "application/json" }
+});
+const data = await res.json();
+```
+</details>
+
+<details>
+<summary>10. PokeAPI: fetchPokemonConTimeout(id, ms)</summary>
+
+```js
+async function fetchPokemonConTimeout(id, ms) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), ms);
+  try {
+    const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}/`, {
+      signal: controller.signal
+    });
+    clearTimeout(timeout);
+    if (!res.ok) throw new Error(res.status);
+    return res.json();
+  } catch (e) {
+    if (e.name === "AbortError") throw new Error("Timeout");
+    throw e;
+  }
+}
+```
+</details>
+
+<details>
+<summary>11. PokeAPI: paginación offset=20</summary>
+
+```js
+const res = await fetch("https://pokeapi.co/api/v2/pokemon?offset=20&limit=20");
+const data = await res.json();
+data.results.forEach(p => console.log(p.name));
+```
+</details>
+
+<details>
+<summary>12. PokeAPI: helper pokeApi(path)</summary>
+
+```js
+async function pokeApi(path) {
+  const res = await fetch(`https://pokeapi.co/api/v2/${path}`);
+  if (!res.ok) throw new Error(res.status);
+  return res.json();
+}
+// Uso: await pokeApi("pokemon/1"); await pokeApi("pokemon?limit=5");
 ```
 </details>
 
