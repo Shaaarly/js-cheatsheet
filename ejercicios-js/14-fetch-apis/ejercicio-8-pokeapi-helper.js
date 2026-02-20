@@ -4,3 +4,7 @@
 // Node 18+: node ejercicio-8-pokeapi-helper.js
 //
 const BASE = "https://pokeapi.co/api/v2";
+
+const res = await fetch("https://pokeapi.co/api/v2/pokemon?limit=10&offset=0");
+const data = await res.json()
+console.log(data.count, data.results)

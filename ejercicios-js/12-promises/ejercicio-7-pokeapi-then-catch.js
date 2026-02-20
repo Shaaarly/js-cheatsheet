@@ -5,3 +5,17 @@
 const BASE = "https://pokeapi.co/api/v2";
 
 
+// fetch("https://pokeapi.co/api/v2/pokemon/1")
+//   .then(r => r.json())
+//   .then(data => {
+//     console.log("Nombre:", data.name)
+//     console.log("Tipos:", data.types.map(t => t.type.name))
+//   })
+//   .catch(err => console.error(err))
+
+fetch("https://pokeapi.co/api/v2/pokemon/1")
+  .then(r => r.json())
+  .then(data => {
+    console.log("Nombre:", data.name)
+    console.log("Tipos:", data.types.map(t => t.type.name))
+  })

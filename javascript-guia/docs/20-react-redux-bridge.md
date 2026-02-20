@@ -1,6 +1,8 @@
-# 19. Puente a React + Redux: inmutabilidad, reducers, async thunks
+# 20. Puente a React + Redux: inmutabilidad, reducers, async thunks
 
 **[⬅ Volver al índice](../README.md)**
+
+Recomendado tener hechas las **mini apps** del [cap. 19 (React desde cero)](19-react-desde-cero.md) (Contador, Todo list, Lista desde API). Puedes reutilizarlas aquí: sustituir estado local (useState/useEffect) por Redux (store, dispatch, useSelector) para practicar reducers y thunks.
 
 ---
 
@@ -202,6 +204,8 @@ const selectTotal = (state) =>
 4. ¿Por qué en un reducer no debes hacer `state.loading = true`?
 5. Dado un array de pedidos con `total`, escribe un selector puro que devuelva la suma de totales.
 6. Normaliza un array `[{ id: 1, name: "A" }, { id: 2, name: "B" }]` a la forma `{ byId: {}, ids: [] }`.
+
+**Con mini apps (cap. 19):** opcionalmente, toma tu **Contador** o **Lista desde API** (PokeAPI) y añade Redux: store con el reducer correspondiente, dispatch de acciones desde el componente, lectura del estado con useSelector. Para la lista, sustituye el useEffect + useState por un thunk que haga fetch y guarde los datos en el store.
 
 ---
 

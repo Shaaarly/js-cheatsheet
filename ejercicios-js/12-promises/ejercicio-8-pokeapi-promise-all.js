@@ -4,3 +4,12 @@
 //
 const BASE = "https://pokeapi.co/api/v2";
 const ids = [1, 4, 7];
+
+
+const datos = await Promise.all(
+    ids.map(id => 
+        fetch(`${BASE}/pokemon/${id}/`).then(r => r.json())
+    )
+).then(pokemons => pokemons.map(p => ({ name: p.name})))
+
+console.log(datos)

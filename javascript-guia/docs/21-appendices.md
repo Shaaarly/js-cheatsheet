@@ -1,4 +1,4 @@
-# 20. Apéndices: tabla rápida, glosario, debugging, buenas prácticas, recursos
+# 21. Apéndices: tabla rápida, glosario, debugging, buenas prácticas, recursos
 
 **[⬅ Volver al índice](../README.md)**
 
@@ -38,11 +38,11 @@ Ver **[Cheat sheet](cheatsheet.md)** para tablas completas de Arrays, Strings, O
 | **API** | Interfaz para comunicación (ej. HTTP REST); en JS suele referirse a endpoints que consumimos con fetch. |
 | **Async** | Operación que no bloquea; el resultado llega después (callbacks, promesas, async/await). |
 | **Bubbling** | Fase del evento desde el elemento target hacia los ancestros en el DOM. |
-| **Closure** | Función que “recuerda” variables del ámbito donde fue creada. |
+| **Closure** | Función que "recuerda" variables del ámbito donde fue creada. |
 | **Coerción** | Conversión implícita de tipo (ej. string a number en operaciones). |
 | **DOM** | Document Object Model; representación en memoria del documento HTML como árbol de nodos. |
 | **Event loop** | Mecanismo que ejecuta tareas: call stack, cola de microtasks, cola de macrotasks. |
-| **Hoisting** | “Elevación” de declaraciones (var, function) al inicio de su scope. |
+| **Hoisting** | "Elevación" de declaraciones (var, function) al inicio de su scope. |
 | **Inmutabilidad** | No modificar datos en sitio; crear copias para cambios. |
 | **Microtask** | Tarea con prioridad sobre macrotasks (then/catch/finally de promesas, queueMicrotask). |
 | **Mutador** | Método que modifica el objeto/array original (ej. push, sort, splice). |
@@ -60,7 +60,7 @@ Ver **[Cheat sheet](cheatsheet.md)** para tablas completas de Arrays, Strings, O
 - **MDN (JavaScript)**: documentación de referencia de la Web.
 - **ECMAScript**: especificación del lenguaje; para profundizar en comportamiento.
 - **Redux**: documentación oficial y Redux Toolkit para thunks y slices.
-- **React**: documentación oficial; hooks y “Thinking in React” para estado y flujo de datos.
+- **React**: documentación oficial; hooks y "Thinking in React" para estado y flujo de datos.
 
 ---
 

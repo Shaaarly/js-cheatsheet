@@ -1,6 +1,6 @@
 # Guía completa de JavaScript para DAW
 
-Guía técnica de JavaScript desde cero hasta nivel avanzado: tipos, estructuras, funciones, objetos, arrays, módulos, DOM, eventos, fetch, promesas, async/await, errores, patrones comunes y preparación directa para **React + Redux** (async thunks y manejo de estado).
+Guía técnica de JavaScript desde cero hasta nivel avanzado: tipos, estructuras, funciones, objetos, arrays, módulos, DOM, eventos, fetch, promesas, async/await, errores, patrones comunes; **React desde cero** (componentes, estado, mini apps) y **React + Redux** (reducers, async thunks).
 
 ---
 
@@ -71,13 +71,14 @@ Sigue el índice maestro en orden. Cada capítulo incluye ejemplos, trampas de e
 | 16 | [16 - Eventos](docs/16-events.md) | Bubbling/capture, delegation, forms |
 | 17 | [17 - Storage y navegador](docs/17-storage-browser.md) | localStorage, sessionStorage, cookies, JSON |
 
-### Parte VII — Examen y React/Redux
+### Parte VII — Examen, React y Redux
 
 | # | Capítulo | Descripción |
 |---|----------|-------------|
 | 18 | [18 - Testing mental para examen](docs/18-exam-mental-test.md) | Ejercicios tipo examen por bloques |
-| 19 | [19 - Puente a React + Redux](docs/19-react-redux-bridge.md) | Inmutabilidad, reducers, async thunks, patrones |
-| 20 | [20 - Apéndices](docs/20-appendices.md) | Tabla rápida, glosario, recursos |
+| 19 | [19 - React desde cero](docs/19-react-desde-cero.md) | Componentes, estado, efectos; mini apps para practicar |
+| 20 | [20 - Puente a React + Redux](docs/20-react-redux-bridge.md) | Inmutabilidad, reducers, async thunks; usa las mini apps del cap. 19 |
+| 21 | [21 - Apéndices](docs/21-appendices.md) | Tabla rápida, glosario, recursos |
 
 ### Referencia rápida
 
@@ -103,7 +104,7 @@ Sigue el índice maestro en orden. Cada capítulo incluye ejemplos, trampas de e
 - **DOM y eventos** → [15](docs/15-dom.md), [16](docs/16-events.md)  
 - **Storage** → [17](docs/17-storage-browser.md)  
 - **Examen** → [18](docs/18-exam-mental-test.md)  
-- **React/Redux** → [19](docs/19-react-redux-bridge.md)  
+- **React** → [19](docs/19-react-desde-cero.md) · **React/Redux** → [20](docs/20-react-redux-bridge.md)  
 
 ---
 

@@ -5,6 +5,129 @@
 
 ---
 
+## Cómo ejecutar y visualizar los ejercicios
+
+### Ejercicios con Node (consola)
+
+La mayoría de ejercicios (fundamentos, arrays, funciones, promesas, async/await, fetch sin DOM, etc.) se ejecutan con Node:
+
+```bash
+# Desde la raíz del repo o desde la carpeta del ejercicio
+node ejercicios-js/01-basics/ejercicio-1.js
+node ejercicios-js/12-promises/ejercicio-1.js
+```
+
+### Ejercicios de DOM y eventos en el navegador
+
+Los ejercicios que usan **DOM** (cap. 15), **eventos** (cap. 16), **extras 10, 11, 13** y el **bloque 6 del examen mental** necesitan un HTML que cargue el script y tenga los elementos que usa el ejercicio (por ejemplo `#lista-pedidos`, `#f`, `#list`, botones, etc.).
+
+**Opción 1 — HTML mínimo en la misma carpeta**
+
+Crea un `index.html` en la carpeta del ejercicio (o en `ejercicios-js/15-dom/`, `ejercicios-js/16-events/`, etc.) que tenga los id/clases que pide el enunciado y cargue tu script:
+
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>DOM / Eventos</title>
+</head>
+<body>
+  <div id="lista-pedidos">
+    <div class="pedido">Pedido 1</div>
+    <div class="pedido">Pedido 2</div>
+  </div>
+  <!-- Ajusta los id/clases según el ejercicio -->
+  <script src="ejercicio-1.js"></script>
+</body>
+</html>
+```
+
+Luego abre ese HTML en el navegador (doble clic o arrastrar el archivo, o con un servidor local).
+
+**Opción 2 — Servidor local (recomendado para evitar restricciones de CORS en fetch)**
+
+Si el ejercicio hace `fetch` a una API, es mejor servir los archivos por HTTP:
+
+```bash
+# Con Node (npx no instala globalmente)
+npx serve ejercicios-js/15-dom
+# o desde la raíz:
+npx serve .
+```
+
+Luego abre en el navegador la URL que indique `serve` (por ejemplo `http://localhost:3000`) y navega hasta la carpeta y el `index.html`.
+
+**Opción 3 — Extensión “Live Server” en VS Code / Cursor**
+
+Clic derecho en el `index.html` → “Open with Live Server”. Abre la página en el navegador y recarga al cambiar el código.
+
+### Ejercicios de React (cap. 19)
+
+Son mini apps en **JSX** que se desarrollan dentro de un proyecto **Vite + React**.
+
+**Instalación y arranque:**
+
+```bash
+# Crear proyecto (solo la primera vez)
+npm create vite@latest mi-app -- --template react
+cd mi-app
+npm install
+# Arrancar servidor de desarrollo
+npm run dev
+```
+
+Abre en el navegador la URL que muestre Vite (por ejemplo `http://localhost:5173`). Los archivos de `ejercicios-js/19-react-desde-cero/*.jsx` son plantillas/enunciados: implementa el código en tu proyecto (por ejemplo en `App.jsx` o en componentes dentro de `src/`).
+
+### Ejercicios de React + Redux (cap. 20)
+
+Los ejercicios del cap. 20 se hacen en el **mismo proyecto React** (o en uno que ya tengas). Instala Redux y arranca el proyecto:
+
+```bash
+cd mi-app
+npm install @reduxjs/toolkit react-redux
+npm run dev
+```
+
+Implementa los ejercicios (reducers, thunks, etc.) en tu app y visualiza en el navegador como en el cap. 19.
+
+### Comandos necesarios (resumen)
+
+| Qué | Comando |
+|-----|--------|
+| Ejecutar un .js con Node | `node ruta/al/archivo.js` |
+| Servidor estático (HTML/DOM) | `npx serve .` o `npx serve ejercicios-js/15-dom` |
+| Crear proyecto React (Vite) | `npm create vite@latest mi-app -- --template react` |
+| Instalar dependencias (React/Redux) | `cd mi-app` → `npm install` |
+| Redux en proyecto existente | `npm install @reduxjs/toolkit react-redux` |
+| Arrancar React en desarrollo | `npm run dev` |
+
+**Requisitos:** tener instalado **Node.js** (incluye `npm` y `npx`). Descarga desde [nodejs.org](https://nodejs.org).
+
+### Linter (ESLint)
+
+Para revisar sintaxis y estilo en los ejercicios JS (opcional):
+
+```bash
+# En la raíz del proyecto (donde están los ejercicios)
+npm init -y
+npm install -D eslint
+npx eslint --init
+```
+
+Responde al asistente (por ejemplo: JavaScript, sin framework, estilo recomendado). Luego:
+
+```bash
+# Comprobar una carpeta
+npx eslint ejercicios-js/15-dom
+# Comprobar todo
+npx eslint ejercicios-js
+```
+
+Si usas el proyecto Vite de React, ESLint se puede integrar en el propio proyecto con `npm create vite@latest` y añadiendo después `eslint` y la config que prefieras (por ejemplo `eslint-plugin-react`).
+
+---
+
 ## 1. Positivo / negativo / cero
 
 ```js
