@@ -2,9 +2,9 @@
 
 Ejercicios del [cap. 19 de la guía](../../javascript-guia/docs/19-react-desde-cero.md). Son **mini apps** para hacer en un proyecto React (Vite).
 
-**Dos opciones:**
+**Estructura:**
 
-- **Ruta Pokedex (ruta única):** Un solo proyecto en **`pokedex-app/`** que construyes en 6 pasos (lista, card, detalle, búsqueda con PokeAPI y Bootstrap). Secuencia completa en [PLAN-POKEDEX.md](PLAN-POKEDEX.md). Al terminar tienes una mini app lista para migrarla a Redux en el tema 20. Instrucciones de arranque en [pokedex-app/README.md](pokedex-app/README.md).
-- **Ejercicios sueltos:** Los archivos `.jsx` de esta carpeta (contador, saludo, todo list, etc.) son enunciados para implementar en un proyecto Vite que tú creas.
+- **`pokedex-app/`** — Ruta Pokedex: un solo proyecto que construyes en 6 pasos (lista, card, detalle, búsqueda con PokeAPI y Bootstrap). Secuencia en [PLAN-POKEDEX.md](PLAN-POKEDEX.md). Instrucciones en [pokedex-app/README.md](pokedex-app/README.md).
+- **Un directorio por ejercicio** (contador, saludo, todo list, etc.): cada uno tiene su carpeta con `README.md` y `enunciado.jsx`. Puedes crear el proyecto Vite **dentro de ese directorio** (`npm create vite@latest . -- --template react` desde la carpeta del ejercicio) y así cada ejercicio tiene su proyecto separado.
 
-**Crear proyecto (ejercicios sueltos):** `npm create vite@latest mi-app -- --template react` → `cd mi-app` → `npm install` → `npm run dev`. Implementa cada ejercicio en tu proyecto (p. ej. en `App.jsx` o en componentes separados).
+**Directorios de ejercicios sueltos:** `ejercicio-1-contador/`, `ejercicio-2-saludo-props/`, `ejercicio-3-todo-list/`, `ejercicio-4-lista-pokeapi/`, `ejercicio-5-formulario-controlado/`, `ejercicio-6-contador-limites/`. En cada uno, el README indica cómo crear el proyecto Vite ahí.
