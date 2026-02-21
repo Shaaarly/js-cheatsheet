@@ -106,7 +106,16 @@ Implementa los ejercicios (reducers, thunks, etc.) en tu app y visualiza en el n
 
 ### Linter (ESLint)
 
-Para revisar sintaxis y estilo en los ejercicios JS (opcional):
+**Ejercicios React y Redux (cap. 19 y 20):** En el examen **no puede haber ningún error de linter**. Es obligatorio instalar ESLint en cada proyecto React/Redux, configurarlo para React y hacer que `npm run lint` termine sin errores. En cada directorio de ejercicio (y en `pokedex-app/`) el README indica los pasos. Comandos típicos:
+
+```bash
+npm install -D eslint eslint-plugin-react eslint-plugin-react-hooks eslint-plugin-react-refresh
+npx eslint --init
+```
+
+Elige: JavaScript, React, navegador. Añade en `package.json`: `"lint": "eslint src/"`. Ejecuta `npm run lint` y corrige todos los errores.
+
+**Resto de ejercicios JS (opcional):** Para revisar sintaxis y estilo en ejercicios sin React:
 
 ```bash
 # En la raíz del proyecto (donde están los ejercicios)
@@ -115,16 +124,7 @@ npm install -D eslint
 npx eslint --init
 ```
 
-Responde al asistente (por ejemplo: JavaScript, sin framework, estilo recomendado). Luego:
-
-```bash
-# Comprobar una carpeta
-npx eslint ejercicios-js/15-dom
-# Comprobar todo
-npx eslint ejercicios-js
-```
-
-Si usas el proyecto Vite de React, ESLint se puede integrar en el propio proyecto con `npm create vite@latest` y añadiendo después `eslint` y la config que prefieras (por ejemplo `eslint-plugin-react`).
+Responde al asistente (por ejemplo: JavaScript, sin framework, estilo recomendado). Luego: `npx eslint ejercicios-js/15-dom` o `npx eslint ejercicios-js`.
 
 ---
 

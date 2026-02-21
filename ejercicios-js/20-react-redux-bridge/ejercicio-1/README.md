@@ -20,3 +20,14 @@ npm run dev
 ```
 
 Puedes implementar un reducer que use esta actualización inmutable.
+
+## Linter (obligatorio)
+
+En el examen no puede haber ningún error de linter. Si creas el proyecto Vite+Redux aquí, instala ESLint y pasa el linter sin errores:
+
+```bash
+npm install -D eslint eslint-plugin-react eslint-plugin-react-hooks eslint-plugin-react-refresh
+npx eslint --init
+```
+
+Elige: JavaScript, React, navegador. Añade `"lint": "eslint src/"` en `package.json`. Ejecuta `npm run lint` y corrige todos los errores.

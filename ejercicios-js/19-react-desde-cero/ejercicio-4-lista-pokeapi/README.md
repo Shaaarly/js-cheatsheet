@@ -17,3 +17,14 @@ npm run dev
 ```
 
 Implementa el fetch en `useEffect` y el estado (lista, loading) en tu componente.
+
+## Linter (obligatorio)
+
+En el examen no puede haber ningún error de linter. Instala ESLint y pasa el linter sin errores:
+
+```bash
+npm install -D eslint eslint-plugin-react eslint-plugin-react-hooks eslint-plugin-react-refresh
+npx eslint --init
+```
+
+Elige: JavaScript, React, navegador. Añade `"lint": "eslint src/"` en `package.json`. Ejecuta `npm run lint` y corrige todos los errores.

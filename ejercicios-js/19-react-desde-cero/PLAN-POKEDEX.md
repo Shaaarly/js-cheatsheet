@@ -19,6 +19,10 @@ Ruta de ejercicios que construye **una sola mini app tipo Pokedex** con PokeAPI:
 
 Un único proyecto en **`pokedex-app/`** (dentro de `19-react-desde-cero/`). Los pasos del tema 19 se hacen en ese proyecto; los del tema 20 se aplican en el **mismo** proyecto añadiendo Redux.
 
+## Linter (obligatorio)
+
+En el examen no puede haber ningún error de linter. Instala ESLint en el proyecto (después de crear Vite y dependencias), configúralo para React, y haz que `npm run lint` (o `npx eslint src/`) termine sin errores antes de dar por terminado cada paso o la entrega. Ver [pokedex-app/README.md](pokedex-app/README.md) para los comandos.
+
 ---
 
 # Tema 19 — React (6 pasos)

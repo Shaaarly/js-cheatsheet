@@ -28,7 +28,16 @@ Mini app tipo Pokedex construida paso a paso: **Tema 19** en React (lista, detal
 
 3. **Seguir el plan:** Abre [../PLAN-POKEDEX.md](../PLAN-POKEDEX.md) y haz los pasos en orden. Los pasos 1–6 corresponden al **Tema 19 (React)**; los pasos 7–12 (sección "Tema 20 — Redux") se hacen en este mismo proyecto añadiendo Redux.
 
-4. **Arrancar en desarrollo:**
+4. **Instalar y configurar el linter (obligatorio):** En el examen no puede haber ningún error de linter. Después de `npm install`:
+
+   ```bash
+   npm install -D eslint eslint-plugin-react eslint-plugin-react-hooks eslint-plugin-react-refresh
+   npx eslint --init
+   ```
+
+   Elige: JavaScript, React, navegador. Añade en `package.json` el script `"lint": "eslint src/"` si no existe. Ejecuta `npm run lint` (o `npx eslint src/`) y **corrige todos los errores** antes de dar por terminado cada paso.
+
+5. **Arrancar en desarrollo:**
 
    ```bash
    npm run dev

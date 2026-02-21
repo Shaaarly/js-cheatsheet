@@ -20,3 +20,14 @@ npm run dev
 ```
 
 Implementa el reducer en el store y un componente que use `useSelector` y `dispatch` para el contador.
+
+## Linter (obligatorio)
+
+En el examen no puede haber ningún error de linter. Si creas el proyecto aquí, instala ESLint y pasa el linter sin errores:
+
+```bash
+npm install -D eslint eslint-plugin-react eslint-plugin-react-hooks eslint-plugin-react-refresh
+npx eslint --init
+```
+
+Elige: JavaScript, React, navegador. Añade `"lint": "eslint src/"` en `package.json`. Ejecuta `npm run lint` y corrige todos los errores.

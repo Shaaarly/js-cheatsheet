@@ -8,3 +8,5 @@ Ejercicios del [cap. 19 de la guía](../../javascript-guia/docs/19-react-desde-c
 - **Un directorio por ejercicio** (contador, saludo, todo list, etc.): cada uno tiene su carpeta con `README.md` y `enunciado.jsx`. Puedes crear el proyecto Vite **dentro de ese directorio** (`npm create vite@latest . -- --template react` desde la carpeta del ejercicio) y así cada ejercicio tiene su proyecto separado.
 
 **Directorios de ejercicios sueltos:** `ejercicio-1-contador/`, `ejercicio-2-saludo-props/`, `ejercicio-3-todo-list/`, `ejercicio-4-lista-pokeapi/`, `ejercicio-5-formulario-controlado/`, `ejercicio-6-contador-limites/`. En cada uno, el README indica cómo crear el proyecto Vite ahí.
+
+**Linter (obligatorio):** En el examen no puede haber ningún error de linter. En todos los ejercicios de React (y en la Pokedex) debes instalar ESLint, configurarlo para React y hacer que `npm run lint` termine sin errores antes de dar el ejercicio por terminado. Cada README de ejercicio incluye los pasos.

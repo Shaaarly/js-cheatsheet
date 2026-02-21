@@ -42,7 +42,7 @@ npm create vite@latest mi-app -- --template react
 cd mi-app && npm install && npm run dev
 ```
 
-Abre la URL que indique Vite. Implementa los `.jsx` de esta carpeta en tu proyecto (p. ej. en `App.jsx` o en componentes en `src/`).
+Abre la URL que indique Vite. Implementa los ejercicios en tu proyecto (cada ejercicio en su directorio tiene README con instrucciones). **Linter obligatorio:** instala ESLint en cada proyecto y asegúrate de que `npm run lint` no tenga errores (en el examen no puede haber errores de linter).
 
 ### React + Redux (cap. 20)
 
@@ -52,6 +52,8 @@ En el mismo proyecto React:
 npm install @reduxjs/toolkit react-redux
 npm run dev
 ```
+
+**Linter obligatorio** también en los ejercicios de Redux: el código debe pasar `npm run lint` sin errores.
 
 ### Comandos útiles
 
