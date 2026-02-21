@@ -16,7 +16,9 @@ Guía técnica de JavaScript desde cero hasta nivel avanzado: tipos, estructuras
 5. **[08 - Scope, hoisting y this](docs/08-scope-hoisting-this.md)** → lexical scope, `this`, bind/call/apply  
 6. **[12 - Promesas](docs/12-promises.md)**, **[13 - Async/Await](docs/13-async-await.md)** y **[14 - Fetch y APIs](docs/14-fetch-apis.md)** — con **ejercicios usando la [PokeAPI](https://pokeapi.co/)** para practicar con datos reales (sin API key).  
 7. **[18 - Testing mental para examen](docs/18-exam-mental-test.md)** → ejercicios tipo examen  
-8. **[Cheat sheet](docs/cheatsheet.md)** → tabla rápida de métodos  
+8. **[19 - React desde cero](docs/19-react-desde-cero.md)** → componentes, estado, efectos; mini apps  
+9. **[20 - Puente a React + Redux](docs/20-react-redux-bridge.md)** → reducers, async thunks (opcional)  
+10. **[Cheat sheet](docs/cheatsheet.md)** → tabla rápida de métodos  
 
 ### Ruta larga (estudio completo)
 Sigue el índice maestro en orden. Cada capítulo incluye ejemplos, trampas de examen, checklist y mini-ejercicios. En los capítulos de asincronía (12, 13, 14) hay ejercicios extra con PokeAPI.
