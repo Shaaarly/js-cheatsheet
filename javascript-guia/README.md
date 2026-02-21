@@ -1,6 +1,8 @@
-# Guía completa de JavaScript para DAW
+# Guía completa de JavaScript para DAW <a id="inicio"></a>
 
 Guía técnica de JavaScript desde cero hasta nivel avanzado: tipos, estructuras, funciones, objetos, arrays, módulos, DOM, eventos, fetch, promesas, async/await, errores, patrones comunes; **React desde cero** (componentes, estado, mini apps) y **React + Redux** (reducers, async thunks).
+
+**Contenido de esta página:** [Cómo usar esta guía](#cómo-usar-esta-guía) · [Índice maestro](#índice-maestro-table-of-contents) · [Referencia rápida](#referencia-rápida) · [Mapa de navegación por tema](#mapa-de-navegación-por-tema) · [Convenciones](#convenciones-de-la-guía)
 
 ---
 
@@ -21,9 +23,9 @@ Sigue el índice maestro en orden. Cada capítulo incluye ejemplos, trampas de e
 
 ---
 
-## Índice maestro (Table of Contents)
+## Índice maestro (Table of Contents) <a id="índice-maestro-table-of-contents"></a>
 
-### Parte I — Fundamentos
+### Parte I — Fundamentos <a id="parte-i"></a>
 
 | # | Capítulo | Descripción |
 |---|----------|-------------|
@@ -33,28 +35,28 @@ Sigue el índice maestro en orden. Cada capítulo incluye ejemplos, trampas de e
 | 3 | [03 - Strings](docs/03-strings.md) | Métodos y casos reales |
 | 4 | [04 - Numbers, Math, Intl y fechas](docs/04-numbers-math-dates.md) | Métodos y casos reales |
 
-### Parte II — Estructuras de datos
+### Parte II — Estructuras de datos <a id="parte-ii"></a>
 
 | # | Capítulo | Descripción |
 |---|----------|-------------|
 | 5 | [05 - Arrays](docs/05-arrays.md) | Mutadores, no mutadores, iteración, pipelines |
 | 6 | [06 - Objetos](docs/06-objects.md) | CRUD, Object.keys/values/entries, prototipos, clases |
 
-### Parte III — Funciones y contexto
+### Parte III — Funciones y contexto <a id="parte-iii"></a>
 
 | # | Capítulo | Descripción |
 |---|----------|-------------|
 | 7 | [07 - Funciones](docs/07-functions.md) | Declarations, expressions, arrow, closures, HOF |
 | 8 | [08 - Scope, hoisting y this](docs/08-scope-hoisting-this.md) | Lexical scope, block scope, `this`, bind/call/apply |
 
-### Parte IV — Módulos y errores
+### Parte IV — Módulos y errores <a id="parte-iv"></a>
 
 | # | Capítulo | Descripción |
 |---|----------|-------------|
 | 9 | [09 - Módulos](docs/09-modules.md) | import/export, named vs default, organización |
 | 10 | [10 - Manejo de errores](docs/10-error-handling.md) | try/catch/finally, throw, custom errors |
 
-### Parte V — Asincronía
+### Parte V — Asincronía <a id="parte-v"></a>
 
 | # | Capítulo | Descripción |
 |---|----------|-------------|
@@ -63,7 +65,7 @@ Sigue el índice maestro en orden. Cada capítulo incluye ejemplos, trampas de e
 | 13 | [13 - Async/Await](docs/13-async-await.md) | Secuencial vs paralelo, manejo de errores |
 | 14 | [14 - Fetch y APIs](docs/14-fetch-apis.md) | GET/POST/PUT/PATCH/DELETE, headers, abort, retries |
 
-### Parte VI — DOM y navegador
+### Parte VI — DOM y navegador <a id="parte-vi"></a>
 
 | # | Capítulo | Descripción |
 |---|----------|-------------|
@@ -71,7 +73,7 @@ Sigue el índice maestro en orden. Cada capítulo incluye ejemplos, trampas de e
 | 16 | [16 - Eventos](docs/16-events.md) | Bubbling/capture, delegation, forms |
 | 17 | [17 - Storage y navegador](docs/17-storage-browser.md) | localStorage, sessionStorage, cookies, JSON |
 
-### Parte VII — Examen, React y Redux
+### Parte VII — Examen, React y Redux <a id="parte-vii"></a>
 
 | # | Capítulo | Descripción |
 |---|----------|-------------|
@@ -115,4 +117,4 @@ Sigue el índice maestro en orden. Cada capítulo incluye ejemplos, trampas de e
 - **Ejemplos**: orientados a casos de app real (pedidos, formularios, APIs, DOM).
 - **Español**: neutro, profesional, directo.
 
-**[⬅ Inicio](#guía-completa-de-javascript-para-daw)**
+**[⬅ Inicio](#inicio)**
