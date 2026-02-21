@@ -207,6 +207,12 @@ const selectTotal = (state) =>
 
 **Con mini apps (cap. 19):** opcionalmente, toma tu **Contador** o **Lista desde API** (PokeAPI) y añade Redux: store con el reducer correspondiente, dispatch de acciones desde el componente, lectura del estado con useSelector. Para la lista, sustituye el useEffect + useState por un thunk que haga fetch y guarde los datos en el store.
 
+### 7.1. Ejercicios Pokedex (Redux)
+
+Si has seguido la **ruta Pokedex** del [cap. 19](19-react-desde-cero.md) (app única en `pokedex-app/`), puedes migrar esa misma app a Redux en 6 pasos. El plan con los enunciados está en [PLAN-POKEDEX.md](../../ejercicios-js/19-react-desde-cero/PLAN-POKEDEX.md) (sección "Tema 20 — Redux").
+
+**Pasos (Tema 20):** 1) Store y slice `pokemonList` (lista, loading, error); sustituir useState por useSelector/dispatch · 2) Thunk `fetchPokemonList`; dispatch desde componente · 3) Slice `pokemonDetail` + thunk `fetchPokemonDetail(id)`; click en card dispara thunk · 4) Slice búsqueda `searchQuery`; selector lista filtrada · 5) Selectores con createSelector; opcional normalización · 6) Refactor: carpetas, nombres consistentes.
+
 ---
 
 ## 8. Soluciones

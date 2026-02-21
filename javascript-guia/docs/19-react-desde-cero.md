@@ -18,6 +18,7 @@ Este capítulo permite aprender React desde cero para construir **mini apps** (e
 8. [Mini apps para practicar](#8-mini-apps-para-practicar)
 9. [Checklist rápido](#9-checklist-rápido)
 10. [Ejercicios](#10-ejercicios)
+11. [Ejercicios Pokedex (ruta única)](#101-ejercicios-pokedex-ruta-única)
 
 ---
 
@@ -234,6 +235,16 @@ function ListaPokemon() {
 6. **Contador con límites:** como el contador pero con botones que no pasen de 0 ni de 10 (deshabilitar o no sumar/restar fuera de rango).
 
 Las mini apps **Contador**, **Todo list** y **Lista desde API** se pueden reutilizar en el [cap. 20 - React + Redux](20-react-redux-bridge.md) para practicar reducers, estado global y thunks (cargar la lista con Redux en lugar de useState + useEffect local).
+
+### 10.1. Ejercicios Pokedex (ruta única)
+
+Ruta alternativa: **una sola app tipo Pokedex** en 6 pasos, con lista, detalle y búsqueda usando [PokeAPI](https://pokeapi.co/) y Bootstrap. Al terminar tienes una mini app lista para migrarla a Redux en el [cap. 20](20-react-redux-bridge.md).
+
+**Stack:** Vite + React, Bootstrap (react-bootstrap o CDN), PokeAPI.
+
+**Plan completo:** [PLAN-POKEDEX.md](../../ejercicios-js/19-react-desde-cero/PLAN-POKEDEX.md) (en la carpeta de ejercicios). Proyecto único en `ejercicios-js/19-react-desde-cero/pokedex-app/`.
+
+**Pasos (Tema 19):** 1) Proyecto base (Vite, Bootstrap, layout "Pokedex") · 2) Lista desde API (fetch, loading, error) · 3) Componente PokemonCard (sprite, nombre, id) · 4) Detalle al click (fetch por id, tipos, stats) · 5) Búsqueda por nombre (input controlado, filtrar lista) · 6) Pulir UI (Bootstrap, spinner, mensajes de error).
 
 ---
 

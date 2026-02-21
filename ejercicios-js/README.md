@@ -9,8 +9,8 @@ En **cada archivo de ejercicio** hay una sección **`--- Datos de partida ---`**
 ## Estructura
 
 - **01-basics** … **18-exam-mental-test**: 6 archivos por capítulo (`ejercicio-1.js` … `ejercicio-6.js`). Enunciados en `javascript-guia/docs/XX-nombre.md`, sección "Mini-ejercicios".
-- **19-react-desde-cero**: 6 ejercicios React (`.jsx`); base en cada archivo; hacer en proyecto Vite+React. Ver `javascript-guia/docs/19-react-desde-cero.md`, sección "Ejercicios".
-- **20-react-redux-bridge**: 6 archivos (`ejercicio-1.js` … `ejercicio-6.js`). Enunciados en `javascript-guia/docs/20-react-redux-bridge.md`, sección "Mini-ejercicios".
+- **19-react-desde-cero**: **Ruta Pokedex:** proyecto único en `19-react-desde-cero/pokedex-app/` siguiendo [PLAN-POKEDEX.md](19-react-desde-cero/PLAN-POKEDEX.md) (6 pasos React). O ejercicios sueltos (`.jsx`) en un proyecto Vite. Ver `javascript-guia/docs/19-react-desde-cero.md`.
+- **20-react-redux-bridge**: 6 archivos (`ejercicio-1.js` … `ejercicio-6.js`). Enunciados en `javascript-guia/docs/20-react-redux-bridge.md`, sección "Mini-ejercicios". O migrar la Pokedex del tema 19 a Redux siguiendo la parte Redux de [PLAN-POKEDEX.md](19-react-desde-cero/PLAN-POKEDEX.md).
 - **18-exam-mental-test**: 6 bloques (`bloque-1-variables-tipos-coercion.js` … `bloque-6-dom-eventos.js`). Cada archivo agrupa ~5 preguntas tipo examen.
 - **extras**: 13 ejercicios de `javascript-guia/docs/exercises.md` (`ejercicio-01.js` … `ejercicio-13.js`).
 
@@ -28,7 +28,8 @@ node 01-basics/ejercicio-1.js
 
 Los de **DOM** (15), **eventos** (16), **extras 10, 11, 13** y **bloque 6 del examen mental** necesitan un HTML que cargue el script y tenga los elementos que usa el ejercicio.
 
-- **Opción rápida:** crea un `index.html` en la carpeta (p. ej. `15-dom/` o `16-events/`) con los `id`/clases que pida el enunciado y una etiqueta `<script src="ejercicio-1.js"></script>`. Abre el HTML en el navegador (doble clic o arrastrar).
+- **15-dom** y **16-events** tienen ya un `index.html` con una sección por ejercicio y los `id`/clases necesarios. Abre ese HTML en el navegador y en el propio archivo cambia el `<script src="ejercicio-X.js">` al ejercicio que estés haciendo.
+- **Opción manual:** crea un `index.html` en la carpeta con los `id`/clases que pida el enunciado y `<script src="ejercicio-1.js"></script>`. Abre el HTML en el navegador (doble clic o arrastrar).
 - **Con servidor local:** `npx serve .` o `npx serve 15-dom` y abre la URL en el navegador (útil si el ejercicio hace `fetch`).
 - **VS Code / Cursor:** extensión “Live Server” → clic derecho en `index.html` → “Open with Live Server”.
 

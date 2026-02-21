@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>16 - Eventos - Ejercicios</title>
+  <style>
+    body { font-family: system-ui, sans-serif; padding: 1rem; max-width: 60rem; margin: 0 auto; }
+    section { margin: 2rem 0; padding: 1rem; border: 1px solid #ccc; border-radius: 8px; }
+    section h2 { margin-top: 0; font-size: 1rem; color: #333; }
+    #items li { cursor: pointer; padding: 0.25rem 0; }
+    #items li:hover { background: #f0f0f0; }
+    .target-current { padding: 1rem; background: #f9f9f9; }
+  </style>
+</head>
+<body>
+  <h1>Cap. 16 — Eventos</h1>
+  <p>Cambia el <code>&lt;script src="..."&gt;</code> al ejercicio que estés haciendo (ejercicio-1.js … ejercicio-6.js).</p>
+
+  <!-- Ejercicio 1: click en botón → e.target.textContent -->
+  <section aria-labelledby="titulo-ej1">
+    <h2 id="titulo-ej1">Ejercicio 1 — Click y texto del botón</h2>
+    <button type="button">Pulsar aquí</button>
+  </section>
+
+  <!-- Ejercicio 2: form #pedido, preventDefault, FormData -->
+  <section aria-labelledby="titulo-ej2">
+    <h2 id="titulo-ej2">Ejercicio 2 — Form #pedido (FormData)</h2>
+    <form id="pedido">
+      <p><label>Nombre <input name="nombre" type="text" /></label></p>
+      <p><label>Cantidad <input name="cantidad" type="number" value="1" /></label></p>
+      <p><label>Notas <input name="notas" type="text" /></label></p>
+      <button type="submit">Enviar</button>
+    </form>
+  </section>
+
+  <!-- Ejercicio 3: delegación en #items, li con data-id -->
+  <section aria-labelledby="titulo-ej3">
+    <h2 id="titulo-ej3">Ejercicio 3 — Delegación en #items (click → data-id)</h2>
+    <ul id="items">
+      <li data-id="101">Item 101</li>
+      <li data-id="102">Item 102</li>
+      <li data-id="103">Item 103</li>
+    </ul>
+  </section>
+
+  <!-- Ejercicio 4: target vs currentTarget (listener en div, click en botón) -->
+  <section aria-labelledby="titulo-ej4">
+    <h2 id="titulo-ej4">Ejercicio 4 — target vs currentTarget</h2>
+    <div class="target-current" id="contenedor-ej4">
+      <button type="button">Soy el botón (target)</button>
+    </div>
+  </section>
+
+  <!-- Ejercicio 5: input búsqueda + #caracteres -->
+  <section aria-labelledby="titulo-ej5">
+    <h2 id="titulo-ej5">Ejercicio 5 — Contador de caracteres (#caracteres)</h2>
+    <p><label>Búsqueda <input type="text" id="busqueda" placeholder="Escribe aquí" /></label></p>
+    <p>Caracteres (sin espacios): <span id="caracteres">0</span></p>
+  </section>
+
+  <!-- Ejercicio 6: select change → value y textContent -->
+  <section aria-labelledby="titulo-ej6">
+    <h2 id="titulo-ej6">Ejercicio 6 — Select (change)</h2>
+    <select id="select-ej6">
+      <option value="">-- Elige --</option>
+      <option value="a">Opción A</option>
+      <option value="b">Opción B</option>
+      <option value="c">Opción C</option>
+    </select>
+  </section>
+
+  <!-- Cambia el src al ejercicio que estés haciendo -->
+  <!-- <script src="ejercicio-1.js"></script> -->
+  <!-- <script src="ejercicio-2.js"></script> -->
+  <!-- <script src="ejercicio-3.js"></script> -->
+  <!-- <script src="ejercicio-4.js"></script> -->
+  <!-- <script src="ejercicio-5.js"></script> -->
+  <script src="ejercicio-6.js"></script>
+</body>
+</html>

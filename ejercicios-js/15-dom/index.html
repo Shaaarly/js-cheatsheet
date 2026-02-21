@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>15 - DOM - Ejercicios</title>
+  <style>
+    body { font-family: system-ui, sans-serif; padding: 1rem; max-width: 60rem; margin: 0 auto; }
+    section { margin: 2rem 0; padding: 1rem; border: 1px solid #ccc; border-radius: 8px; }
+    section h2 { margin-top: 0; font-size: 1rem; color: #333; }
+    .pedido { padding: 0.25rem 0; }
+    #formulario.cargando { opacity: 0.6; pointer-events: none; }
+    .card { border: 1px solid #ddd; padding: 0.5rem; margin: 0.25rem 0; }
+  </style>
+</head>
+<body>
+  <h1>Cap. 15 — DOM</h1>
+  <p>Cambia en el &lt;body&gt; el <code>&lt;script src="..."&gt;</code> al ejercicio que estés haciendo (ejercicio-1.js … ejercicio-6.js).</p>
+
+  <!-- Ejercicio 1: #lista-pedidos y .pedido -->
+  <section aria-labelledby="titulo-ej1">
+    <h2 id="titulo-ej1">Ejercicio 1 — querySelector #lista-pedidos .pedido</h2>
+    <div id="lista-pedidos">
+      <div class="pedido">Pedido A - 25€</div>
+      <div class="pedido">Pedido B - 40€</div>
+      <div class="pedido">Pedido C - 15€</div>
+    </div>
+  </section>
+
+  <!-- Ejercicio 2: botón "Añadir" se añade a #acciones -->
+  <section aria-labelledby="titulo-ej2">
+    <h2 id="titulo-ej2">Ejercicio 2 — Botón en #acciones</h2>
+    <div id="acciones"></div>
+  </section>
+
+  <!-- Ejercicio 3: #formulario + classList cargando -->
+  <section aria-labelledby="titulo-ej3">
+    <h2 id="titulo-ej3">Ejercicio 3 — #formulario (classList cargando)</h2>
+    <div id="formulario">
+      Formulario de ejemplo. Tu script añade la clase "cargando" y la quita a los 2s.
+    </div>
+  </section>
+
+  <!-- Ejercicio 4: data-pedido-id en un div -->
+  <section aria-labelledby="titulo-ej4">
+    <h2 id="titulo-ej4">Ejercicio 4 — data-pedido-id</h2>
+    <div id="pedido-card">Aquí puedes asignar dataset.pedidoId y leerlo (ej. con document.querySelector("#pedido-card")).</div>
+  </section>
+
+  <!-- Ejercicio 5: contenedor para ul con li ["A","B","C"] -->
+  <section aria-labelledby="titulo-ej5">
+    <h2 id="titulo-ej5">Ejercicio 5 — ul con li (contenedor)</h2>
+    <div id="contenedor-lista"></div>
+  </section>
+
+  <!-- Ejercicio 6: DocumentFragment con 3 div.card -->
+  <section aria-labelledby="titulo-ej6">
+    <h2 id="titulo-ej6">Ejercicio 6 — Fragment con 3 div.card</h2>
+    <div id="contenedor-cards"></div>
+  </section>
+
+  <!-- Cambia el src al ejercicio que estés haciendo -->
+  <!-- <script src="ejercicio-1.js"></script>
+  <script src="ejercicio-2.js"></script>
+  <script src="ejercicio-3.js"></script>
+  <script src="ejercicio-4.js"></script> -->
+  <!-- <script src="ejercicio-5.js"></script> -->
+  <script src="ejercicio-6.js"></script>
+</body>
+</html>
