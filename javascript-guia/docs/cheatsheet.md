@@ -39,6 +39,8 @@
 `reduce`: `(acumulador, elem, índice?, array?) => nuevoAcumulador`; 2º arg = valor inicial.  
 `sort`: `(a, b) => number` (negativo a antes b; positivo b antes a; 0 igual).
 
+*Ejemplos completos y casos de uso: ver [cap. 5 - Arrays](05-arrays.md).*
+
 ---
 
 ## Strings
@@ -62,6 +64,8 @@
 
 *Los strings son inmutables: ningún método modifica el original.*
 
+*Ejemplos completos: ver [cap. 3 - Strings](03-strings.md).*
+
 ---
 
 ## Object
@@ -76,6 +80,8 @@
 | **Spread { ...obj }** | nuevo objeto | Copia/actualización inmutable |
 | **Object.hasOwn(obj, key)** | boolean | ¿Propiedad propia? |
 | **"key" in obj** | boolean | Propia o heredada |
+
+*Ejemplos completos: ver [cap. 6 - Objetos](06-objects.md).*
 
 ---
 
@@ -95,6 +101,8 @@
 | **Promise.any(iterable)** | Primera que cumple; rechaza si todas fallan | Fallback entre fuentes |
 
 *Encadenamiento:* un `.catch()` al final captura cualquier rechazo previo en la cadena. Usar siempre `.catch()` o try/catch con await para evitar unhandled rejection.
+
+*Ejemplos completos: ver [cap. 12 - Promesas](12-promises.md) y [cap. 13 - Async/await](13-async-await.md).*
 
 ---
 

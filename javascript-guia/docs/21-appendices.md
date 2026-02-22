@@ -47,11 +47,23 @@ Ver **[Cheat sheet](cheatsheet.md)** para tablas completas de Arrays, Strings, O
 | **Microtask** | Tarea con prioridad sobre macrotasks (then/catch/finally de promesas, queueMicrotask). |
 | **Mutador** | Método que modifica el objeto/array original (ej. push, sort, splice). |
 | **Pure function** | Misma entrada → misma salida; sin efectos secundarios ni mutación. |
+| **Provider** | Componente de React-Redux que recibe el store y lo inyecta en el árbol; envuelve la app en `main.jsx`. |
 | **Reducer** | Función (state, action) => newState; pura; usada en Redux. |
 | **Scope** | Ámbito donde una variable es visible (global, función, bloque). |
+| **Slice** | En Redux Toolkit: porción de estado + reducers + acciones generadas; se combina en `configureStore`. |
 | **TDZ** | Temporal Dead Zone: zona donde let/const no son accesibles hasta su línea de declaración. |
 | **Thunk** | Función que devuelve una función (en Redux: async thunk para side effects y dispatch). |
 | **Truthy/Falsy** | Valores que se evalúan como true/false en contextos booleanos. |
+
+---
+
+## Referencia rápida React + Redux
+
+- **Provider:** `<Provider store={store}>` en `main.jsx`; el store se crea con `configureStore({ reducer: { nombre: slice.reducer } })`.
+- **Leer estado:** `useSelector(state => state.nombreSlice.campo)`; el componente se re-renderiza cuando ese trozo de estado cambia.
+- **Despachar:** `const dispatch = useDispatch();` y luego `dispatch(accion())` o `dispatch(thunk())` (p. ej. en `useEffect` o en un click).
+- **Thunk con argumento:** `dispatch(fetchDetalle(id))`; el thunk recibe `id` como primer argumento del payloadCreator.
+- Detalle: [cap. 19 - React](19-react-desde-cero.md) y [cap. 20 - React + Redux](20-react-redux-bridge.md).
 
 ---
 

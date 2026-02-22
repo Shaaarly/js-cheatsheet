@@ -73,6 +73,31 @@ Sustituir el estado local de la lista por Redux.
 
 **Enunciado:** Instala Redux Toolkit y React-Redux (`npm install @reduxjs/toolkit react-redux`). Crea el store con `configureStore`. Crea un slice `pokemonList` con estado inicial `{ list: [], loading: false, error: null }` y reducers que manejen acciones tipo `pokemonList/loading`, `pokemonList/loaded` (payload: lista) y `pokemonList/error` (payload: mensaje). En el componente que mostraba la lista, sustituye `useState` por `useSelector` para leer `list`, `loading` y `error`, y en `useEffect` haz el fetch como hasta ahora pero en lugar de `setList`/`setLoading`/`setError` haz `dispatch` de las acciones correspondientes. Conecta la app con `<Provider store={store}>` en `main.jsx`.
 
+**Ejemplo de conexión en `main.jsx`:**
+
+```jsx
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import { Provider } from "react-redux";
+import { configureStore } from "@reduxjs/toolkit";
+import App from "./App.jsx";
+import pokemonListReducer from "./store/pokemonListSlice";
+
+const store = configureStore({
+  reducer: {
+    pokemonList: pokemonListReducer
+  }
+});
+
+createRoot(document.getElementById("root")).render(
+  <StrictMode>
+    <Provider store={store}>
+      <App />
+    </Provider>
+  </StrictMode>
+);
+```
+
 ## Paso 2. Thunk para cargar lista
 
 Mover la lógica del fetch a un thunk.

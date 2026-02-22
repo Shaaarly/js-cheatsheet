@@ -125,7 +125,39 @@ setUser({ ...user, name: "Ana" });
 <form onSubmit={(e) => { e.preventDefault(); enviar(); }}>
 ```
 
-**Formulario controlado:** el input tiene `value={estado}` y `onChange` que actualiza ese estado. Así React “posee” el valor.
+**Formulario controlado:** el input tiene `value={estado}` y `onChange` que actualiza ese estado. Así React “posee” el valor. Ejemplo completo con dos campos y envío:
+
+```jsx
+function FormularioContacto() {
+  const [nombre, setNombre] = useState("");
+  const [email, setEmail] = useState("");
+  const [enviado, setEnviado] = useState(null);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setEnviado({ nombre, email });
+    // o console.log({ nombre, email });
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input
+        value={nombre}
+        onChange={(e) => setNombre(e.target.value)}
+        placeholder="Nombre"
+      />
+      <input
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        placeholder="Email"
+      />
+      <button type="submit">Enviar</button>
+      {enviado && <p>Enviado: {enviado.nombre}, {enviado.email}</p>}
+    </form>
+  );
+}
+```
 
 ---
 
@@ -147,7 +179,41 @@ function ListaDesdeApi() {
 }
 ```
 
-**Cleanup (opcional):** si el callback devuelve una función, React la ejecuta al desmontar o antes de volver a ejecutar el efecto.
+**Renderizado condicional:** mostrar distinto contenido según el estado (loading, error, datos). Usar ternario o `&&` dentro de `{ }`.
+
+```jsx
+if (loading) return <p>Cargando...</p>;
+if (error) return <p>Error: {error}</p>;
+return <ul>...</ul>;
+
+// O en el mismo return:
+return (
+  <div>
+    {loading && <p>Cargando...</p>}
+    {error && <p className="error">{error}</p>}
+    {!loading && !error && <ul>{items.map(...)}</ul>}
+  </div>
+);
+```
+
+**Cleanup (opcional):** si el callback devuelve una función, React la ejecuta al desmontar o antes de volver a ejecutar el efecto. Sirve para cancelar peticiones, limpiar timers o suscripciones.
+
+```jsx
+useEffect(() => {
+  const id = setInterval(() => setCount((c) => c + 1), 1000);
+  return () => clearInterval(id);  // cleanup al desmontar
+}, []);
+
+// Con fetch: abortar si el componente se desmonta antes de responder
+useEffect(() => {
+  const controller = new AbortController();
+  fetch(url, { signal: controller.signal })
+    .then((r) => r.json())
+    .then(setData)
+    .catch((e) => { if (e.name !== "AbortError") setError(e); });
+  return () => controller.abort();
+}, [url]);
+```
 
 ---
 
@@ -220,7 +286,8 @@ function ListaPokemon() {
 - [ ] Props: solo lectura; expresiones en `{ }`; `className` y `htmlFor`.
 - [ ] useState(ini) → [valor, setValor]; actualizar con setter; no mutar estado.
 - [ ] Eventos: onClick/onChange/onSubmit con función; formularios controlados (value + onChange).
-- [ ] useEffect(callback, [deps]); vacío [] = solo al montar; fetch en useEffect.
+- [ ] useEffect(callback, [deps]); vacío [] = solo al montar; cleanup si devuelves función; fetch en useEffect.
+- [ ] Renderizado condicional: loading/error con ternario o `&&`.
 - [ ] Listas: map + key única (id o name).
 
 ---

@@ -6,6 +6,8 @@
 
 Componente que recibe la prop `nombre` y muestra "Hola, {nombre}". Uso: `<Saludo nombre="Ana" />`. Implementa en `Saludo.jsx` y úsalo desde `App.jsx`.
 
+**En la guía:** [cap. 19](../../../javascript-guia/docs/19-react-desde-cero.md#3-props-y-composición) — Props y composición.
+
 ## Crear el proyecto Vite aquí
 
 ```bash

@@ -6,6 +6,8 @@
 
 **Contador con límites:** como el contador pero el valor no puede pasar de 0 ni de 10. Deshabilitar botones o no sumar/restar cuando ya estés en el límite. `useState` para el número; en los `onClick` comprobar antes de actualizar.
 
+**En la guía:** [cap. 19](../../../javascript-guia/docs/19-react-desde-cero.md#4-estado-con-usestate) — Estado con useState (y [Contador](../../../javascript-guia/docs/19-react-desde-cero.md#8-mini-apps-para-practicar) como base).
+
 ## Crear el proyecto Vite aquí
 
 ```bash

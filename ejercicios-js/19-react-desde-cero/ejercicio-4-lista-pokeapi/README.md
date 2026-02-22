@@ -8,6 +8,8 @@ Lista desde **PokeAPI:** `useEffect` que hace fetch al endpoint; estado para lis
 
 **API:** `https://pokeapi.co/api/v2/pokemon?limit=10` → `data.results` (cada uno tiene `name`, `url`; la url lleva al detalle con sprites).
 
+**En la guía:** [cap. 19](../../../javascript-guia/docs/19-react-desde-cero.md) — [useEffect](../../../javascript-guia/docs/19-react-desde-cero.md#6-useeffect-side-effects), [Lista PokeAPI](../../../javascript-guia/docs/19-react-desde-cero.md#8-mini-apps-para-practicar).
+
 ## Crear el proyecto Vite aquí
 
 ```bash

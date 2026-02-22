@@ -12,10 +12,11 @@ Recomendado tener hechas las **mini apps** del [cap. 19 (React desde cero)](19-r
 2. [Inmutabilidad y pure functions](#2-inmutabilidad-y-pure-functions)
 3. [Reducers y estado](#3-reducers-y-estado)
 4. [Async thunks: promesas + async/await + fetch](#4-async-thunks-promesas--asyncawait--fetch)
-5. [Patrones: datos normalizados, loading/error](#5-patrones-datos-normalizados-loadingerror)
-6. [Checklist rápido](#6-checklist-rápido)
-7. [Mini-ejercicios](#7-mini-ejercicios)
-8. [Soluciones](#8-soluciones)
+5. [Conexión React–Redux: Provider, useSelector, useDispatch](#5-conexión-reactredux-provider-useselector-usedispatch)
+6. [Patrones: datos normalizados, loading/error](#6-patrones-datos-normalizados-loadingerror)
+7. [Checklist rápido](#7-checklist-rápido)
+8. [Mini-ejercicios](#8-mini-ejercicios)
+9. [Soluciones](#9-soluciones)
 
 ---
 
@@ -152,9 +153,89 @@ const slice = createSlice({
 // En el componente: dispatch(fetchPedidos())
 ```
 
+**Thunk con argumentos:** el `payloadCreator` de `createAsyncThunk` puede recibir un argumento; ese valor se pasa al llamar al thunk desde el componente. Ejemplo: cargar detalle por id.
+
+```js
+// En el slice: el primer parámetro del payloadCreator es el argumento (aquí id)
+export const fetchPokemonDetail = createAsyncThunk(
+  "pokemonDetail/fetch",
+  async (id, { rejectWithValue }) => {
+    const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
+    if (!res.ok) return rejectWithValue(await res.text());
+    return res.json();
+  }
+);
+```
+
+En el componente: se obtiene el id (p. ej. del click en una card) y se despacha pasando ese id:
+
+```jsx
+// Al hacer click en una card: dispatch(fetchPokemonDetail(pokemon.id))
+<button onClick={() => dispatch(fetchPokemonDetail(pokemon.id))}>Ver detalle</button>
+```
+
 ---
 
-## 5. Patrones: datos normalizados, loading/error
+## 5. Conexión React–Redux: Provider, useSelector, useDispatch
+
+Para que la app React use el store de Redux hace falta: 1) crear el store y envolver la app con `<Provider>`, 2) en los componentes, leer estado con `useSelector` y despachar acciones con `useDispatch`.
+
+**1. Store y Provider (en `main.jsx` o `main.tsx`):**
+
+```jsx
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import { Provider } from "react-redux";
+import { configureStore } from "@reduxjs/toolkit";
+import App from "./App.jsx";
+import pedidosReducer from "./store/pedidosSlice";
+
+const store = configureStore({
+  reducer: {
+    pedidos: pedidosReducer
+  }
+});
+
+createRoot(document.getElementById("root")).render(
+  <StrictMode>
+    <Provider store={store}>
+      <App />
+    </Provider>
+  </StrictMode>
+);
+```
+
+**2. En el componente: leer estado y despachar**
+
+```jsx
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchPedidos } from "./store/pedidosSlice";
+
+function ListaPedidos() {
+  const dispatch = useDispatch();
+  const { list, loading, error } = useSelector((state) => state.pedidos);
+
+  useEffect(() => {
+    dispatch(fetchPedidos());
+  }, [dispatch]);
+
+  if (loading) return <p>Cargando...</p>;
+  if (error) return <p>Error: {error}</p>;
+  return (
+    <ul>
+      {list.map((p) => <li key={p.id}>{p.nombre}</li>)}
+    </ul>
+  );
+}
+```
+
+- **useSelector(state => state.pedidos):** devuelve la porción de estado del slice `pedidos`; cuando ese estado cambia, el componente se re-renderiza.
+- **useDispatch():** devuelve la función `dispatch` para enviar acciones (o thunks). Se usa en eventos o en `useEffect` para cargar datos.
+
+---
+
+## 6. Patrones: datos normalizados, loading/error
 
 **Normalizar datos:** guardar listas por id en un objeto y array de ids para orden.
 ```js
@@ -177,26 +258,48 @@ state = {
 // Tras fallo: { loading: false, error: "mensaje" }
 ```
 
-**Selectores:** funciones puras `state => valor` que derivan datos del estado (p. ej. suma de totales, lista filtrada). Centralizan la forma de "leer" el estado y facilitan cambios de estructura. Con Redux Toolkit se puede usar `createSelector` (de Reselect) para memoizar y evitar recálculos cuando las entradas no cambian.
+**Selectores:** funciones puras `state => valor` que derivan datos del estado (p. ej. suma de totales, lista filtrada). Centralizan la forma de "leer" el estado y facilitan cambios de estructura.
+
+Selector simple:
 
 ```js
 const selectTotal = (state) =>
   state.pedidos.list.reduce((s, p) => s + p.total, 0);
 ```
 
+**createSelector (memoizado):** con `createSelector` de `@reduxjs/toolkit` (o `reselect`) el resultado solo se recalcula cuando cambian las dependencias (p. ej. lista o filtro). Útil para listas filtradas o derivadas costosas.
+
+```js
+import { createSelector } from "@reduxjs/toolkit";
+
+const selectList = (state) => state.pokemon.list;
+const selectSearchQuery = (state) => state.search.query;
+
+export const selectFilteredList = createSelector(
+  [selectList, selectSearchQuery],
+  (list, query) => {
+    if (!query.trim()) return list;
+    const q = query.toLowerCase();
+    return list.filter((p) => p.name.toLowerCase().includes(q));
+  }
+);
+// En el componente: const list = useSelector(selectFilteredList);
+```
+
 ---
 
-## 6. Checklist rápido
+## 7. Checklist rápido
 
 - [ ] No mutar state; usar spread, map, filter, slice para nuevos objetos/arrays.
 - [ ] Reducers: (state, action) => newState; puros.
 - [ ] Thunk: función que devuelve async (dispatch) => { fetch + dispatch(actions) }.
 - [ ] Despachar loading antes de fetch, loaded/error después.
 - [ ] Normalizar cuando convenga (byId + ids); loading/error en el slice.
+- [ ] Provider en main; useSelector para leer; useDispatch para despachar (y thunks con argumentos).
 
 ---
 
-## 7. Mini-ejercicios
+## 8. Mini-ejercicios
 
 1. Dado un estado `{ items: [{ id: 1, qty: 2 }, { id: 2, qty: 1 }] }`, escribe la actualización **inmutable** para incrementar `qty` del item con id 2 en 1.
 2. Escribe un reducer que maneje las acciones "counter/increment" y "counter/decrement" (estado: { value: 0 }).
@@ -215,7 +318,7 @@ Si has seguido la **ruta Pokedex** del [cap. 19](19-react-desde-cero.md) (app ú
 
 ---
 
-## 8. Soluciones
+## 9. Soluciones
 
 <details>
 <summary>1. Incrementar qty de id 2</summary>
