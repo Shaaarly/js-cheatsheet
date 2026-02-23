@@ -91,6 +91,7 @@ Sigue el índice maestro en orden. Cada capítulo incluye ejemplos, trampas de e
 | **Cheat sheet** (tablas de métodos) | [javascript-guia/docs/cheatsheet.md](javascript-guia/docs/cheatsheet.md) |
 | **Ejercicios adicionales** | [javascript-guia/docs/exercises.md](javascript-guia/docs/exercises.md) (opcional) |
 | **Soluciones** | [javascript-guia/docs/solutions.md](javascript-guia/docs/solutions.md) (opcional) |
+| **Examen práctico (JS→React→Redux)** | [ejercicios-js/21-examen-js-react-redux](ejercicios-js/21-examen-js-react-redux/) — app lista de tareas; migrar a React y luego a Redux (~3 h) |
 
 ---
 
@@ -109,6 +110,7 @@ Sigue el índice maestro en orden. Cada capítulo incluye ejemplos, trampas de e
 - **Storage** → [17](javascript-guia/docs/17-storage-browser.md)  
 - **Examen** → [18](javascript-guia/docs/18-exam-mental-test.md)  
 - **React** → [19](javascript-guia/docs/19-react-desde-cero.md) · **React/Redux** → [20](javascript-guia/docs/20-react-redux-bridge.md)  
+- **Examen práctico** → [ejercicios-js/21-examen-js-react-redux](ejercicios-js/21-examen-js-react-redux/) (app JS → React → Redux)  
 
 ---
 

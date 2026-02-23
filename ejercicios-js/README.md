@@ -11,6 +11,7 @@ En **cada archivo de ejercicio** hay una sección **`--- Datos de partida ---`**
 - **01-basics** … **18-exam-mental-test**: 6 archivos por capítulo (`ejercicio-1.js` … `ejercicio-6.js`). Enunciados en `javascript-guia/docs/XX-nombre.md`, sección "Mini-ejercicios".
 - **19-react-desde-cero**: **Ruta Pokedex:** `pokedex-app/` + [PLAN-POKEDEX.md](19-react-desde-cero/PLAN-POKEDEX.md). **Ejercicios sueltos:** cada uno en su directorio (`ejercicio-1-contador/`, `ejercicio-2-saludo-props/`, … `ejercicio-6-contador-limites/`); dentro de cada carpeta puedes crear el proyecto Vite. Ver `javascript-guia/docs/19-react-desde-cero.md`.
 - **20-react-redux-bridge**: Cada ejercicio en su directorio (`ejercicio-1/` … `ejercicio-6/`); dentro puedes crear proyecto Vite+Redux. O migrar la Pokedex con la parte Redux de [PLAN-POKEDEX.md](19-react-desde-cero/PLAN-POKEDEX.md). Enunciados en `javascript-guia/docs/20-react-redux-bridge.md`, sección "Mini-ejercicios".
+- **21-examen-js-react-redux**: **Examen práctico.** App lista de tareas en JavaScript base en `app-vanilla/`; el ejercicio es migrarla a React (~1 h) y luego a Redux (~1 h). Plan en [PLAN-EXAMEN-JS-REACT-REDUX.md](21-examen-js-react-redux/PLAN-EXAMEN-JS-REACT-REDUX.md). Total orientativo: ~3 h.
 - **18-exam-mental-test**: 6 bloques (`bloque-1-variables-tipos-coercion.js` … `bloque-6-dom-eventos.js`). Cada archivo agrupa ~5 preguntas tipo examen.
 - **extras**: 13 ejercicios de `javascript-guia/docs/exercises.md` (`ejercicio-01.js` … `ejercicio-13.js`).
 
