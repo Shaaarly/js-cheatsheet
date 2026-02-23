@@ -8,15 +8,82 @@ Recomendado tener hechas las **mini apps** del [cap. 19 (React desde cero)](19-r
 
 ## Mini-índice del capítulo
 
+0. [Preparar proyecto y archivos](#0-preparar-proyecto-y-archivos)
 1. [Conceptos JS imprescindibles para React/Redux](#1-conceptos-js-imprescindibles-para-reactredux)
 2. [Inmutabilidad y pure functions](#2-inmutabilidad-y-pure-functions)
-3. [Reducers y estado](#3-reducers-y-estado)
+3. [Reducers y estado](#3-reducers-y-estado) · [3.1 Estado inicial y payload](#31-estado-inicial-y-payload) · [3.2 Un slice o varios](#32-un-slice-o-varios)
 4. [Async thunks: promesas + async/await + fetch](#4-async-thunks-promesas--asyncawait--fetch)
-5. [Conexión React–Redux: Provider, useSelector, useDispatch](#5-conexión-reactredux-provider-useselector-usedispatch)
+5. [Conexión React–Redux: Provider, useSelector, useDispatch](#5-conexión-reactredux-provider-useselector-usedispatch) · [5.1 Por qué useSelector recibe una función](#51-por-qué-useselector-recibe-una-función)
 6. [Patrones: datos normalizados, loading/error](#6-patrones-datos-normalizados-loadingerror)
 7. [Checklist rápido](#7-checklist-rápido)
 8. [Mini-ejercicios](#8-mini-ejercicios)
 9. [Soluciones](#9-soluciones)
+
+---
+
+## 0. Preparar proyecto y archivos
+
+**Crear proyecto:** Vite + React (o Create React App). Instalar Redux Toolkit y react-redux:
+
+```bash
+npm create vite@latest mi-app -- --template react
+cd mi-app && npm install
+npm install @reduxjs/toolkit react-redux
+```
+
+Opcional: React Router si más adelante quieres rutas.
+
+**Archivos que tienes que crear:**
+
+| Archivo | Qué hace |
+|--------|-----------|
+| **src/store/store.js** (o index.js) | Crea el store con `configureStore` y registra los reducers (tus slices). Se crea **una sola vez** en toda la app. |
+| **src/features/&lt;nombre&gt;/&lt;nombre&gt;Slice.js** | Define `initialState`, `reducers` (y opcionalmente `extraReducers` para thunks). Exporta por defecto el **reducer** y, si los usas en componentes, las **acciones** (y el thunk). |
+| **src/main.jsx** | Importa el store y `Provider` de react-redux; envuelve `<App />` con `<Provider store={store}>`. |
+
+No hace falta un archivo aparte para "tratar" el store: se crea en `store/store.js`, se pasa una vez al Provider en `main.jsx`, y el resto de la app usa `useSelector` y `useDispatch` sin tocar el store de nuevo.
+
+**Ejemplo de store:**
+
+```js
+// src/store/store.js
+import { configureStore } from "@reduxjs/toolkit";
+import weatherReducer from "../features/weather/weatherSlice";
+
+export const store = configureStore({
+  reducer: {
+    weather: weatherReducer,
+    // otros slices: favorites: favoritesReducer,
+  },
+});
+```
+
+**main.jsx con Provider:** hay que importar `Provider` y envolver la app. El store se pasa solo aquí:
+
+```jsx
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import { Provider } from "react-redux";
+import "./index.css";
+import App from "./App.jsx";
+import { store } from "./store/store.js";
+
+createRoot(document.getElementById("root")).render(
+  <StrictMode>
+    <Provider store={store}>
+      <App />
+    </Provider>
+  </StrictMode>
+);
+```
+
+Orden habitual: `StrictMode` → `Provider` → `App`. Todo el árbol bajo `App` puede usar `useSelector` y `useDispatch`.
+
+**Dónde crear el slice:** si en el store pones `import weatherReducer from '../features/weather/weatherSlice'`, el archivo debe estar en **src/features/weather/weatherSlice.js**. En ese archivo debes exportar **por defecto** el reducer (`export default weatherSlice.reducer`) para que el import funcione. Las acciones y el thunk se exportan como nombrados: `export const { setTempUnit, setWeather } = weatherSlice.actions;` y `export { fetchWeatherByCity };`.
+
+**Persistir favoritos (localStorage):** opción A) `redux-persist` con blacklist para persistir solo `favoriteCities`. Opción B) en el reducer de "añadir favorito" (o en un thunk) hacer además `localStorage.setItem('favoriteCities', JSON.stringify(...))` y en el `initialState` del slice leer desde `localStorage` al crear el store (o en el primer init). La B es más directa si solo persistes favoritos.
+
+**Orden de implementación sugerido:** 1) Crear proyecto React + Redux (store + slice con estado inicial y reducers mínimos). 2) Implementar el thunk de búsqueda y conectar la API o fakeFetch; comprobar con Redux DevTools que el estado se actualiza. 3) Añadir acciones y estado para tempUnit y favoriteCities; persistir favoritos si aplica. 4) Crear componentes de presentación y conectarlos al store con useSelector/useDispatch.
 
 ---
 
@@ -62,25 +129,72 @@ function totalItems(items) {
 
 ## 3. Reducers y estado
 
-Un **reducer** es una función pura `(state, action) => newState`. Recibe el estado actual y una acción; devuelve el **nuevo** estado (nunca mutar state).  
+Un **reducer** es una función pura `(state, action) => newState`. Recibe el estado actual y una acción; devuelve el **nuevo** estado (nunca mutar state). En Redux **solo se puede cambiar el estado** pasando por un reducer; no hay "setState" directo sobre el store.
+
 *En una frase:* reducer = (state, action) => nuevo estado; puro, sin mutar.
 
+Con **createSlice** (Redux Toolkit) no escribes el switch a mano: defines un objeto `reducers` por nombre; cada función recibe `state` y `action`. Por dentro, Toolkit usa **Immer**, así que puedes escribir como si mutaras `state`; Toolkit genera el nuevo estado de forma inmutable y genera automáticamente las acciones.
+
 ```js
-function pedidosReducer(state = { list: [], loading: false }, action) {
-  switch (action.type) {
-    case "pedidos/loading":
-      return { ...state, loading: true };
-    case "pedidos/loaded":
-      return { ...state, list: action.payload, loading: false };
-    case "pedidos/error":
-      return { ...state, loading: false, error: action.payload };
-    default:
-      return state;
-  }
-}
+import { createSlice } from "@reduxjs/toolkit";
+
+const weatherSlice = createSlice({
+  name: "weather",
+  initialState: { weather: null, forecast: null, loading: false, error: null },
+  reducers: {
+    setTempUnit(state, action) {
+      state.tempUnit = action.payload; // 'metric' o 'imperial'
+    },
+    setWeather(state, action) {
+      state.weather = action.payload;
+      state.loading = false;
+      state.error = null;
+    },
+    setError(state, action) {
+      state.error = action.payload;
+      state.loading = false;
+    },
+  },
+});
+
+export default weatherSlice.reducer;
+export const { setTempUnit, setWeather, setError } = weatherSlice.actions;
 ```
 
-Siempre devolver un nuevo objeto; no hacer `state.loading = true`.
+En el componente: `dispatch(setTempUnit('imperial'))`; Redux llamará al reducer con el state actual y la acción; el reducer actualiza el estado. Siempre devolver (o con Immer, "mutar") un nuevo estado; no hacer mutaciones fuera de createSlice.
+
+### 3.1. Estado inicial y payload
+
+**initialState:** es el valor con el que empieza ese trozo del estado. La idea es la misma que el argumento de `useState(0)` o `useState({})`, pero con dos diferencias importantes:
+
+| | useState (React) | initialState en Redux |
+|--|------------------|------------------------|
+| **Dónde está** | En el componente | En el store (fuera de los componentes) |
+| **Quién lo ve** | Solo ese componente (y los que reciben props) | Cualquier componente que use `useSelector` |
+| **Persistencia** | Se pierde al desmontar el componente | Persiste mientras la app esté abierta (y puedes añadir localStorage, etc.) |
+
+Así que **initialState** en Redux es el "valor inicial" del estado global de ese slice. Solo cambia cuando se disparan acciones que pasan por los reducers.
+
+**Payload:** es el "contenido" o datos que llevas dentro de la acción. La acción es un objeto `{ type, payload }`. Lo que pasas al hacer `dispatch(nombreAccion(dato))` es el **payload**; en el reducer lo usas como `action.payload`.
+
+```js
+dispatch(setTempUnit('imperial'));  // payload = 'imperial'
+dispatch(setWeather(data));         // payload = data (objeto del API)
+dispatch(setError('City not found')); // payload = 'City not found'
+```
+
+En el reducer: `state.tempUnit = action.payload;`. Cuando la acción solo indica un tipo (ej. "limpiar error") sin datos, el reducer puede ignorar `action.payload`.
+
+### 3.2. Un slice o varios
+
+**Puedes usar un solo slice** y está bien. No es obligatorio tener varios.
+
+- **Un solo slice:** app pequeña o mediana; todo el estado muy relacionado (ej. clima: weather, forecast, favoriteCities, tempUnit, loading, error). Un único archivo, menos ficheros, más simple. El store tendría `reducer: { weather: weatherReducer }`.
+- **Varios slices:** cuando quieres separar por **dominio** (ej. "clima" vs "favoritos") o por responsabilidad; o cuando un archivo se hace muy grande. Ejemplo: `weatherSlice` (weather, forecast, tempUnit, loading, error) y `favoritesSlice` (favoriteCities + persistencia). El store: `reducer: { weather: weatherReducer, favorites: favoritesReducer }`. En componentes: `state.weather.weather`, `state.favorites.favoriteCities`.
+
+Recomendación: empezar con **un slice**; añadir más cuando el dominio sea claramente distinto o cuando ayude a organizar.
+
+**Resumen del flujo en el slice:** tienes **initialState** (valor con el que empieza ese trozo del estado), **reducers** (cambian el estado de forma síncrona cuando disparas una acción), **thunks** con `createAsyncThunk` (lógica asíncrona: fetch, promesas) y **extraReducers** (donde el slice reacciona a las acciones del thunk: pending / fulfilled / rejected, y actualiza loading, datos, error). Todo eso se exporta (reducer por defecto, acciones y thunk como nombrados). En los componentes: **dispatch** para causar cambios (buscar, guardar favorito, cambiar unidad); **useSelector** para leer el estado y que el componente se re-renderice cuando cambie.
 
 ---
 
@@ -178,23 +292,16 @@ En el componente: se obtiene el id (p. ej. del click en una card) y se despacha 
 
 ## 5. Conexión React–Redux: Provider, useSelector, useDispatch
 
-Para que la app React use el store de Redux hace falta: 1) crear el store y envolver la app con `<Provider>`, 2) en los componentes, leer estado con `useSelector` y despachar acciones con `useDispatch`.
+Para que la app React use el store de Redux hace falta: 1) crear el store (en `store/store.js`) y envolver la app con `<Provider>` en `main.jsx`, 2) en los componentes, leer estado con `useSelector` y despachar acciones con `useDispatch`.
 
-**1. Store y Provider (en `main.jsx` o `main.tsx`):**
+**1. Store y Provider:** el store se crea en un archivo aparte (ver [§0](#0-preparar-proyecto-y-archivos)); en `main.jsx` solo se importa y se pasa al Provider:
 
 ```jsx
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { Provider } from "react-redux";
-import { configureStore } from "@reduxjs/toolkit";
 import App from "./App.jsx";
-import pedidosReducer from "./store/pedidosSlice";
-
-const store = configureStore({
-  reducer: {
-    pedidos: pedidosReducer
-  }
-});
+import { store } from "./store/store.js";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -230,8 +337,23 @@ function ListaPedidos() {
 }
 ```
 
-- **useSelector(state => state.pedidos):** devuelve la porción de estado del slice `pedidos`; cuando ese estado cambia, el componente se re-renderiza.
-- **useDispatch():** devuelve la función `dispatch` para enviar acciones (o thunks). Se usa en eventos o en `useEffect` para cargar datos.
+**Resumen en una frase:** **dispatch** = "haz algo" (ejecutar reducer o thunk → el estado puede cambiar). **useSelector** = "dame esta parte del estado y avísame cuando cambie" (solo lectura; para pintar o decidir en el componente). Todo lo que hace la app al buscar o guardar (thunks, acciones síncronas) se dispara con `dispatch`; lo que se muestra en pantalla se lee con `useSelector`.
+
+- **useDispatch():** devuelve la función `dispatch`. Se usa para enviar acciones (o thunks): `dispatch(setTempUnit('imperial'))`, `dispatch(fetchWeatherByCity({ city, unit }))`.
+- **useSelector(selector):** devuelve la porción de estado que devuelve la función selector; cuando **esa porción** cambia, el componente se re-renderiza. Sin useSelector, el componente no "ve" el estado de Redux.
+
+### 5.1. Por qué useSelector recibe una función
+
+El hook necesita saber **de qué parte del estado** quieres leer y **cuándo re-renderizar**. Por eso recibe una **función** (el selector), no el estado directamente.
+
+- **El parámetro (state):** lo pone Redux. Cuando el hook se ejecuta, Redux llama a tu función pasándole el **estado actual del store** (todo el árbol: `state.weather`, `state.favorites`, etc.).
+- **La arrow function:** es la "receta": recibe ese `state` y devuelve el trozo que te interesa. Redux no sabe que quieres `state.weather.weather`; tú lo defines devolviendo eso.
+
+Es decir: tú no pasas el estado (no lo tienes). Pasas una función que dice "dado el estado, devuélveme esto". Redux tiene el estado y llama a tu función con él; usa el resultado para darte el valor y para decidir si re-renderizar (compara el valor devuelto con el anterior; si es igual por referencia, no re-renderiza).
+
+```jsx
+useSelector(state => state.weather.weather);  // Redux hace: tuFuncion(estadoActual)
+```
 
 ---
 
@@ -290,12 +412,13 @@ export const selectFilteredList = createSelector(
 
 ## 7. Checklist rápido
 
-- [ ] No mutar state; usar spread, map, filter, slice para nuevos objetos/arrays.
-- [ ] Reducers: (state, action) => newState; puros.
-- [ ] Thunk: función que devuelve async (dispatch) => { fetch + dispatch(actions) }.
-- [ ] Despachar loading antes de fetch, loaded/error después.
-- [ ] Normalizar cuando convenga (byId + ids); loading/error en el slice.
-- [ ] Provider en main; useSelector para leer; useDispatch para despachar (y thunks con argumentos).
+- [ ] Proyecto: store en `store/store.js`, slice(s) en `features/<nombre>/<nombre>Slice.js`, Provider en main.jsx envolviendo App.
+- [ ] initialState: valor inicial del slice (global, persistente en sesión); solo cambia vía reducers.
+- [ ] Reducers: única forma de cambiar estado; en createSlice con Immer puedes "mutar" state; payload = datos de la acción (action.payload).
+- [ ] Un slice está bien; varios cuando domines distintos (ej. weather vs favorites).
+- [ ] Thunk: createAsyncThunk + extraReducers (pending/fulfilled/rejected); despachar loading antes de fetch, loaded/error después.
+- [ ] dispatch = causar cambios (acciones y thunks); useSelector(selector) = leer estado y re-renderizar cuando cambie esa parte; el selector recibe state (inyectado por Redux) y devuelve el trozo que quieres.
+- [ ] No mutar state fuera de createSlice; normalizar cuando convenga; loading/error en el slice.
 
 ---
 
