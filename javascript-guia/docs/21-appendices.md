@@ -1,4 +1,4 @@
-# 21. Apéndices: tabla rápida, glosario, debugging, buenas prácticas, recursos
+# 21. Apéndices: comandos, tabla rápida, glosario, debugging, buenas prácticas, recursos
 
 **[⬅ Volver al índice](../README.md)**
 
@@ -54,6 +54,22 @@ Ver **[Cheat sheet](cheatsheet.md)** para tablas completas de Arrays, Strings, O
 | **TDZ** | Temporal Dead Zone: zona donde let/const no son accesibles hasta su línea de declaración. |
 | **Thunk** | Función que devuelve una función (en Redux: async thunk para side effects y dispatch). |
 | **Truthy/Falsy** | Valores que se evalúan como true/false en contextos booleanos. |
+
+---
+
+## Comandos: Vite (React), Redux, ESLint
+
+| Qué | Comando |
+|-----|--------|
+| **Crear proyecto Vite + React** | `npm create vite@latest nombre-app -- --template react` |
+| **Entrar e instalar dependencias** | `cd nombre-app` → `npm install` |
+| **Arrancar en desarrollo** | `npm run dev` |
+| **Añadir Redux a un proyecto React** | `npm install @reduxjs/toolkit react-redux` |
+| **Instalar ESLint (React)** | `npm install -D eslint eslint-plugin-react eslint-plugin-react-hooks eslint-plugin-react-refresh` |
+| **Inicializar config de ESLint** | `npx eslint --init` (elegir JavaScript, React, browser) |
+| **Script lint en package.json** | Añadir `"lint": "eslint src/"` y ejecutar con `npm run lint` |
+
+Crear proyecto dentro de la carpeta actual: `npm create vite@latest . -- --template react` (el `.` es la carpeta actual).
 
 ---
 

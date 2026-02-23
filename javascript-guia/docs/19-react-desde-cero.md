@@ -16,7 +16,7 @@ Este capítulo permite aprender React desde cero para construir **mini apps** (e
 6. [useEffect: side effects](#6-useeffect-side-effects)
 7. [Listas y keys](#7-listas-y-keys) · [7.1 Callback props](#71-callback-props-elevar-estado-y-pasar-handlers)
 8. [Mini apps para practicar](#8-mini-apps-para-practicar)
-9. [Checklist rápido](#9-checklist-rápido)
+9. [Checklist rápido](#9-checklist-rápido) · [9.1 ESLint](#91-eslint-react-in-jsx-scope-y-prop-types)
 10. [Ejercicios](#10-ejercicios)
 11. [Ejercicios Pokedex (ruta única)](#101-ejercicios-pokedex-ruta-única)
 
@@ -89,6 +89,8 @@ function Saludo({ nombre }) {
 }
 ```
 
+**Nombre de la prop:** El nombre que usas al pasar la prop debe coincidir con el que el hijo desestructura. Si el padre hace `<Detalle detail={pokemon} />`, el hijo debe recibir `function Detalle({ detail })` y usar `detail` en el JSX. Si el hijo recibe `{ pokemonSeleccionado }` pero el padre pasa `detail={...}`, entonces `pokemonSeleccionado` será `undefined` y el componente puede fallar o no mostrar nada.
+
 **children:** contenido entre apertura y cierre. Ej: `<Caja>Contenido</Caja>` → `props.children`.
 
 ```jsx
@@ -137,6 +139,10 @@ const [nombre, setNombre] = useState("");
 <input value={nombre} onChange={(e) => setNombre(e.target.value)} />
 ```
 
+**Mismo nombre en todo el componente:** La variable de estado y el setter (p. ej. `selectedPokemon`, `setSelectedPokemon`) deben usarse con **el mismo nombre** en todo el JSX. Si en un sitio escribes por error `pokemonSeleccionado` en lugar de `selectedPokemon`, esa variable no existe (queda `undefined`), la condición `pokemonSeleccionado && ...` falla y el detalle no se muestra.
+
+**Sustituir el estado por un valor nuevo:** Hacer `setLista(data.results)` con lo que devuelve la API es correcto: no estás mutando el array que había en estado; estás pasando una **referencia nueva** (el array que devolvió el fetch). La inmutabilidad prohíbe mutar el valor actual y luego pasarlo al setter; sustituir todo el estado por otro valor nuevo es válido.
+
 **Regla:** cuando algo deba cambiar en pantalla, debe vivir en estado (useState) o venir de props. Actualizar con `setX(nuevoValor)`; para objetos/arrays, crear copias (spread) y no mutar.
 
 ```jsx
@@ -158,7 +164,7 @@ setList(list.map(t => t.id === id ? { ...t, done: true } : t));  // actualizar
 
 ## 5. Eventos y formularios
 
-**Sintaxis:** `onClick`, `onChange`, `onSubmit` con función (no llamada). Reciben el evento (e).
+**Sintaxis:** `onClick`, `onChange`, `onSubmit` reciben una **función** que se ejecutará cuando ocurra el evento. Hay que **invocar** la función solo cuando pase el evento: `onClick={() => pedirPokemons(n)}` (correcto). Si escribes `onClick={() => pedirPokemons}` sin paréntesis, no estás llamando a `pedirPokemons`, solo pasando una referencia, y el botón no hará nada. Reciben el evento (e) cuando hace falta (p. ej. en onChange).
 
 ```jsx
 <button onClick={() => setCount(c => c + 1)}>+</button>
@@ -288,6 +294,10 @@ return (
 
 Cuando el estado vive en el padre (p. ej. lista de tareas) y el hijo (p. ej. una card) debe poder modificar ese estado (marcar completada, borrar), el padre define las funciones que actualizan el estado y las pasa al hijo como props. El hijo solo recibe esas funciones y las llama en `onClick`/`onChange`; no tiene acceso a `setState`.
 
+**Passar una función, no invocarla:** Si pasas `onClose={setSelectedPokemon(null)}`, estás **ejecutando** el setter en cada render (y además pasas `undefined` como prop). El hijo hace `onClick={onClose}` y espera que `onClose` sea una función; debe ejecutarse al hacer clic. **Solución:** pasar una función: `onClose={() => setSelectedPokemon(null)}`. Así el setter solo se llama cuando el usuario pulsa cerrar.
+
+**El hijo debe usar las props en el DOM:** Si pasas `onClick` o `onClose` a un componente, ese componente tiene que **asignar** esa prop a un elemento del DOM (p. ej. `<div onClick={onClick}>` o `<button onClick={onClose}>`). Si el hijo recibe `onClick` pero no la pone en ningún elemento, el clic no hace nada.
+
 ```jsx
 // En App:
 const eliminar = (id) => setList(list.filter(t => t.id !== id));
@@ -356,6 +366,8 @@ function ListaPokemon() {
 
 **Imágenes (PokeAPI):** la lista `.../pokemon?limit=n` devuelve `{ name, url }` por pokémon; la imagen no está ahí, está en la respuesta del **detalle** (fetch a esa `url`). Opción recomendada: pasar la `url` de detalle a cada componente (p. ej. `<Pokemon name={p.name} url={p.url} />`) y hacer el fetch de la imagen **dentro** de ese componente con `useEffect` y `[url]`; la URL del sprite está en `data.sprites.front_default`. En el `<img>` usa `src={imgUrl}` (expresión), no `src="\`${imgUrl}\`"` (string literal). Los hooks (`useState`, `useEffect`) deben estar **dentro** del cuerpo de la función del componente, nunca en el nivel superior del archivo.
 
+**Búsqueda por nombre:** Carga la lista una vez (useEffect con `[]`). Añade estado `searchQuery` para el input. La lista mostrada debe ser una **variable derivada** que filtre en cliente: `const listaFiltrada = lista.filter((p) => p.name.toLowerCase().includes(searchQuery.toLowerCase().trim()))`; usa `listaFiltrada` en el `map`. **No** pongas `searchQuery` en las dependencias del useEffect que hace el fetch de la lista: ese fetch debe ejecutarse solo al montar. Si pones `[searchQuery]`, en cada tecla se haría una nueva petición y la URL podría ser incorrecta (p. ej. `.../pokemon/pikachu` devuelve un solo Pokémon, no una lista con `results`).
+
 ---
 
 ## 9. Checklist rápido
@@ -368,7 +380,11 @@ function ListaPokemon() {
 - [ ] useEffect(callback, [deps]); vacío [] = solo al montar; cleanup si devuelves función; fetch en useEffect o en handler si es por botón.
 - [ ] Renderizado condicional: loading/error con ternario; setLoading(false) en .finally() del fetch.
 - [ ] Listas: map debe devolver JSX (paréntesis o return); key única desde datos (id o name); nunca key con setState.
-- [ ] Hijo que modifica estado del padre: pasar handlers como props (onBorrar, onToggle) desde el padre.
+- [ ] Hijo que modifica estado del padre: pasar handlers como props (onBorrar, onToggle) desde el padre; pasar **función** (`onClose={() => setX(null)}`), no invocación (`onClose={setX(null)}`); el hijo debe asignar la prop a un elemento (onClick={onClose}).
+
+### 9.1. ESLint (react-in-jsx-scope y prop-types)
+
+En proyectos **Vite + React 17+** el compilador usa el nuevo JSX transform: **no hace falta** tener `import React from 'react'` en cada archivo que usa JSX. Si ESLint marca "React must be in scope when using JSX", es correcto **desactivar** esa regla en la config (`"react/react-in-jsx-scope": "off"`); añadir el import en todos los archivos sería innecesario y anticuado. Para la regla **prop-types** ("X is missing in props validation"): puedes desactivarla si no usas PropTypes (`"react/prop-types": "off"`), o corregir añadiendo PropTypes en cada componente si quieres validar las props. Añade `settings.react.version: "detect"` en la config para quitar el aviso de versión de React.
 
 ---
 
