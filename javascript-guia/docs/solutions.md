@@ -371,4 +371,207 @@ load();
 
 ---
 
+## Tema 19 — React desde cero (mini apps)
+
+Enunciados en [19-react-desde-cero.md](19-react-desde-cero.md#10-ejercicios). Cada ejercicio se implementa en un proyecto Vite + React (por ejemplo en `src/App.jsx`).
+
+### 19.1. Contador
+
+```jsx
+function Contador() {
+  const [n, setN] = useState(0);
+  return (
+    <div>
+      <p>{n}</p>
+      <button onClick={() => setN(n + 1)}>+1</button>
+      <button onClick={() => setN(n - 1)}>-1</button>
+    </div>
+  );
+}
+```
+
+### 19.2. Saludo con props
+
+```jsx
+function Saludo({ nombre }) {
+  return <p>Hola, {nombre}</p>;
+}
+// Uso: <Saludo nombre="Ana" />
+```
+
+### 19.3. Todo list
+
+```jsx
+function TodoList() {
+  const [todos, setTodos] = useState([]);
+  const [texto, setTexto] = useState("");
+  const add = () => {
+    if (!texto.trim()) return;
+    setTodos([...todos, { id: crypto.randomUUID(), texto: texto.trim(), done: false }]);
+    setTexto("");
+  };
+  const toggle = (id) => {
+    setTodos(todos.map((t) => (t.id === id ? { ...t, done: !t.done } : t)));
+  };
+  const remove = (id) => setTodos(todos.filter((t) => t.id !== id));
+  return (
+    <div>
+      <input value={texto} onChange={(e) => setTexto(e.target.value)} />
+      <button onClick={add}>Añadir</button>
+      <ul>
+        {todos.map((t) => (
+          <li key={t.id}>
+            <input type="checkbox" checked={t.done} onChange={() => toggle(t.id)} />
+            <span style={{ textDecoration: t.done ? "line-through" : "none" }}>{t.texto}</span>
+            <button onClick={() => remove(t.id)}>Borrar</button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+```
+
+### 19.4. Lista desde PokeAPI
+
+```jsx
+function ListaPokeAPI() {
+  const [list, setList] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  useEffect(() => {
+    fetch("https://pokeapi.co/api/v2/pokemon?limit=10")
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(r.statusText))))
+      .then((data) => { setList(data.results); setLoading(false); })
+      .catch((e) => { setError(e.message); setLoading(false); });
+  }, []);
+  if (loading) return <p>Cargando...</p>;
+  if (error) return <p>Error: {error}</p>;
+  return (
+    <ul>
+      {list.map((p) => (
+        <li key={p.name}>{p.name}</li>
+      ))}
+    </ul>
+  );
+}
+```
+
+**Recordatorios:** usar `setList(data.results)` (llamada a función), no `setList[data.results]`. Si el fetch va en un botón, hacerlo en el handler y llamar `onClick={() => pedirPokemons(n)}`; poner `setLoading(false)` en `.finally()`. Key desde datos (`key={p.name}`), nunca con setState. Imágenes: fetch a la `url` de cada resultado dentro del componente hijo; sprite en `data.sprites.front_default`; `src={imgUrl}`. Hooks siempre dentro del cuerpo del componente.
+
+### 19.5. Formulario controlado
+
+```jsx
+function FormularioControlado() {
+  const [nombre, setNombre] = useState("");
+  const [email, setEmail] = useState("");
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log({ nombre, email });
+  };
+  return (
+    <form onSubmit={handleSubmit}>
+      <input value={nombre} onChange={(e) => setNombre(e.target.value)} placeholder="Nombre" />
+      <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" />
+      <button type="submit">Enviar</button>
+    </form>
+  );
+}
+```
+
+### 19.6. Contador con límites (0–10)
+
+```jsx
+function ContadorLimites() {
+  const [n, setN] = useState(0);
+  return (
+    <div>
+      <p>{n}</p>
+      <button onClick={() => setN((c) => c + 1)} disabled={n >= 10}>+1</button>
+      <button onClick={() => setN((c) => c - 1)} disabled={n <= 0}>-1</button>
+    </div>
+  );
+}
+```
+
+---
+
+## Tema 20 — React + Redux (mini-ejercicios)
+
+Enunciados en [20-react-redux-bridge.md](20-react-redux-bridge.md#8-mini-ejercicios). Soluciones resumidas:
+
+**1. Incrementar qty del item con id 2 (inmutable):**
+
+```js
+const nuevoEstado = {
+  ...state,
+  items: state.items.map((item) =>
+    item.id === 2 ? { ...item, qty: item.qty + 1 } : item
+  )
+};
+```
+
+**2. Reducer counter (increment/decrement):**
+
+```js
+function counterReducer(state = { value: 0 }, action) {
+  switch (action.type) {
+    case "counter/increment":
+      return { ...state, value: state.value + 1 };
+    case "counter/decrement":
+      return { ...state, value: state.value - 1 };
+    default:
+      return state;
+  }
+}
+```
+
+**3. Thunk crearPedido:**
+
+```js
+function crearPedido(pedido) {
+  return async (dispatch) => {
+    dispatch({ type: "pedidos/creating" });
+    try {
+      const res = await fetch("/api/pedidos", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(pedido)
+      });
+      if (!res.ok) throw new Error(res.statusText);
+      const data = await res.json();
+      dispatch({ type: "pedidos/created", payload: data });
+    } catch (e) {
+      dispatch({ type: "pedidos/error", payload: e.message });
+    }
+  };
+}
+```
+
+**4. ¿Por qué no `state.loading = true`?**  
+Porque mutas el estado. Redux (y React) comparan por referencia; el reducer debe devolver un **nuevo** objeto.
+
+**5. Selector suma de totales:**
+
+```js
+const selectTotalPedidos = (state) =>
+  state.pedidos.list.reduce((s, p) => s + p.total, 0);
+```
+
+**6. Normalizar array a `{ byId, ids }`:**
+
+```js
+const normalized = list.reduce(
+  (acc, item) => ({
+    byId: { ...acc.byId, [item.id]: item },
+    ids: [...acc.ids, item.id]
+  }),
+  { byId: {}, ids: [] }
+);
+```
+
+Versión extendida con todos los detalles en [20-react-redux-bridge.md § Soluciones](20-react-redux-bridge.md#9-soluciones).
+
+---
+
 **[⬅ Volver al índice](../README.md)**

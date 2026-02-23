@@ -14,7 +14,7 @@ Este capítulo permite aprender React desde cero para construir **mini apps** (e
 4. [Estado con useState](#4-estado-con-usestate)
 5. [Eventos y formularios](#5-eventos-y-formularios)
 6. [useEffect: side effects](#6-useeffect-side-effects)
-7. [Listas y keys](#7-listas-y-keys)
+7. [Listas y keys](#7-listas-y-keys) · [7.1 Callback props](#71-callback-props-elevar-estado-y-pasar-handlers)
 8. [Mini apps para practicar](#8-mini-apps-para-practicar)
 9. [Checklist rápido](#9-checklist-rápido)
 10. [Ejercicios](#10-ejercicios)
@@ -67,13 +67,26 @@ function Tarjeta({ titulo, activo }) {
 
 ## 3. Props y composición
 
-**Props:** argumentos que recibe el componente (objeto). Solo lectura; no mutar.
+**Props:** el componente recibe **un solo argumento**, que es el objeto con todas las props. Si escribes `function Saludo(text)`, entonces `text` es el objeto completo (p. ej. `{ nombre: "Ana" }`), no el valor de una prop llamada "nombre". Por eso lo habitual es **desestructurar**: `function Saludo({ nombre })` para usar directamente el valor.
 
 ```jsx
 function Mensaje({ texto, tipo }) {
   return <p className={tipo}>{texto}</p>;
 }
 // Uso: <Mensaje texto="Hola" tipo="info" />
+```
+
+**Error frecuente:** si defines `function Saludo(props)` o `function Saludo(text)` y en el JSX haces `<p>{text}</p>`, estás intentando renderizar un **objeto**. React no puede mostrar objetos como hijos y puede dar pantalla en blanco o el error *"Objects are not valid as a React child"*. **Solución:** desestructurar las props que necesites, p. ej. `function Saludo({ nombre })` y entonces `<p>{nombre}</p>` sí muestra el valor.
+
+```jsx
+// Mal: text es el objeto { nombre: "Ana" }
+function Saludo(text) {
+  return <p>{text}</p>;  // ❌ renderiza un objeto
+}
+// Bien:
+function Saludo({ nombre }) {
+  return <p>Hola, {nombre}</p>;
+}
 ```
 
 **children:** contenido entre apertura y cierre. Ej: `<Caja>Contenido</Caja>` → `props.children`.
@@ -88,7 +101,7 @@ function Caja({ children }) {
 
 ## 4. Estado con useState
 
-**useState(valorInicial):** devuelve `[valor, setValor]`. Actualizar siempre con el setter; no mutar el estado directamente.
+**useState(valorInicial):** devuelve `[valor, setValor]`. Actualizar siempre con el setter; no mutar el estado directamente. El **setter no devuelve el nuevo valor** (devuelve `undefined`); no se puede hacer `valor = setValor(x)` para "obtener" el valor actualizado — el nuevo valor se verá en el **siguiente render**.
 
 ```jsx
 import { useState } from "react";
@@ -104,6 +117,15 @@ function Contador() {
 }
 ```
 
+**Importante:** **nunca** llames al setter durante el render del componente (en el cuerpo de la función, antes del return, ni en el JSX que se evalúa al pintar). Eso provoca un bucle infinito y el error *"Too many re-renders"*: render → setState → re-render → setState → … **Solución:** llamar al setter solo dentro de manejadores de eventos (`onClick`, `onChange`, `onSubmit`) o dentro de `useEffect`.
+
+**Input controlado (cambiar un valor desde un input):** el input debe tener `value={estado}` y `onChange` que actualice ese estado.
+
+```jsx
+const [nombre, setNombre] = useState("");
+<input value={nombre} onChange={(e) => setNombre(e.target.value)} />
+```
+
 **Regla:** cuando algo deba cambiar en pantalla, debe vivir en estado (useState) o venir de props. Actualizar con `setX(nuevoValor)`; para objetos/arrays, crear copias (spread) y no mutar.
 
 ```jsx
@@ -111,6 +133,14 @@ const [user, setUser] = useState({ name: "", age: 0 });
 // Bien:
 setUser({ ...user, name: "Ana" });
 // Mal: user.name = "Ana"; setUser(user);
+```
+
+**Inmutabilidad con listas:** `array.push(item)` **muta** el array y devuelve la **longitud** (un número), no el array. Si haces `setList(list.push(item))` estás pasando un número a `setList`, no un array; el estado deja de ser una lista y la app puede fallar o no mostrar nada. Formas correctas:
+
+```jsx
+setList([...list, nuevoItem]);                    // añadir
+setList(list.filter(t => t.id !== id));           // quitar
+setList(list.map(t => t.id === id ? { ...t, done: true } : t));  // actualizar
 ```
 
 ---
@@ -123,6 +153,15 @@ setUser({ ...user, name: "Ana" });
 <button onClick={() => setCount(c => c + 1)}>+</button>
 <input onChange={(e) => setNombre(e.target.value)} value={nombre} />
 <form onSubmit={(e) => { e.preventDefault(); enviar(); }}>
+```
+
+**Formularios:** el evento `onSubmit` va en el **`<form>`**, no en el botón. El botón debe ser `type="submit"` para que al pulsar (o Enter) se dispare el submit del formulario. En el manejador del form hay que llamar a **`e.preventDefault()`** para evitar que la página se recargue.
+
+```jsx
+<form onSubmit={(e) => { e.preventDefault(); añadir(); }}>
+  <input value={texto} onChange={(e) => setTexto(e.target.value)} />
+  <button type="submit">Añadir</button>
+</form>
 ```
 
 **Formulario controlado:** el input tiene `value={estado}` y `onChange` que actualiza ese estado. Así React “posee” el valor. Ejemplo completo con dos campos y envío:
@@ -219,7 +258,9 @@ useEffect(() => {
 
 ## 7. Listas y keys
 
-Renderizar listas con `.map()` y devolver JSX. Cada elemento debe tener una **key** única y estable (id o nombre, no el índice si la lista puede reordenarse).
+Renderizar listas con `.map()` y **devolver** JSX. Cada elemento debe tener una **key** única y estable que venga de los datos (id o name del item). La key **nunca** debe ser una llamada a setState (p. ej. `key={setId(id+1)}` provoca bucle infinito).
+
+**Error frecuente:** si escribes `list.map(item => { <Card key={item.id} /> })` con **llaves** y sin `return`, la función no devuelve nada (undefined) y no se renderiza ninguna card aunque el array tenga elementos. **Solución:** usar paréntesis `list.map(item => ( <Card key={item.id} ... /> ))` o `return` explícito `list.map(item => { return <Card ... /> })`. Pasa los datos del elemento actual al componente (p. ej. `tarea={item}`), no el estado global.
 
 ```jsx
 const [todos, setTodos] = useState([{ id: 1, texto: "A" }, { id: 2, texto: "B" }]);
@@ -230,6 +271,26 @@ return (
     ))}
   </ul>
 );
+```
+
+### 7.1. Callback props (elevar estado y pasar handlers)
+
+Cuando el estado vive en el padre (p. ej. lista de tareas) y el hijo (p. ej. una card) debe poder modificar ese estado (marcar completada, borrar), el padre define las funciones que actualizan el estado y las pasa al hijo como props. El hijo solo recibe esas funciones y las llama en `onClick`/`onChange`; no tiene acceso a `setState`.
+
+```jsx
+// En App:
+const eliminar = (id) => setList(list.filter(t => t.id !== id));
+return list.map(t => <Card key={t.id} tarea={t} onBorrar={() => eliminar(t.id)} />);
+
+// En Card:
+function Card({ tarea, onBorrar }) {
+  return (
+    <div>
+      <span>{tarea.texto}</span>
+      <button onClick={onBorrar}>Eliminar</button>
+    </div>
+  );
+}
 ```
 
 ---
@@ -278,17 +339,25 @@ function ListaPokemon() {
 }
 ```
 
+**Variante con botón "Buscar":** si la petición debe dispararse al pulsar un botón (y no al montar), haz el fetch en el **manejador del evento**, no dentro de `useEffect`. En `onClick` hay que **invocar** la función: `onClick={() => pedirPokemons(n)}` (con paréntesis y argumentos). No pongas `useEffect` dentro de esa función — los hooks solo pueden usarse en el cuerpo del componente. Para ver qué devuelve la API, haz `console.log(data)` **dentro** del `.then`, antes de `setList`: `.then(data => { console.log('API:', data); setList(data.results); })`. No uses `.then(console.log)` después de `setList` porque el setter devuelve `undefined`. Actualiza el estado con **`setList(data.results)`** (llamada a la función), no `setList[data.results]`. Para el loading, pon `setLoading(false)` cuando el fetch termine (éxito o error), p. ej. con `.finally(() => setLoading(false))`, y muestra "Cargando..." con un ternario claro: `loading ? <p>Cargando...</p> : <ul>...</ul>`.
+
+**Límite válido:** si el estado del input es `useState(0)`, la URL puede ser `?limit=0` y la API devuelve pocos o ningún resultado. Usa un límite mínimo, p. ej. `const limit = n > 0 ? n : 10` antes del fetch.
+
+**Imágenes (PokeAPI):** la lista `.../pokemon?limit=n` devuelve `{ name, url }` por pokémon; la imagen no está ahí, está en la respuesta del **detalle** (fetch a esa `url`). Opción recomendada: pasar la `url` de detalle a cada componente (p. ej. `<Pokemon name={p.name} url={p.url} />`) y hacer el fetch de la imagen **dentro** de ese componente con `useEffect` y `[url]`; la URL del sprite está en `data.sprites.front_default`. En el `<img>` usa `src={imgUrl}` (expresión), no `src="\`${imgUrl}\`"` (string literal). Los hooks (`useState`, `useEffect`) deben estar **dentro** del cuerpo de la función del componente, nunca en el nivel superior del archivo.
+
 ---
 
 ## 9. Checklist rápido
 
 - [ ] Componente = función que devuelve JSX; nombre en mayúscula.
-- [ ] Props: solo lectura; expresiones en `{ }`; `className` y `htmlFor`.
-- [ ] useState(ini) → [valor, setValor]; actualizar con setter; no mutar estado.
-- [ ] Eventos: onClick/onChange/onSubmit con función; formularios controlados (value + onChange).
-- [ ] useEffect(callback, [deps]); vacío [] = solo al montar; cleanup si devuelves función; fetch en useEffect.
-- [ ] Renderizado condicional: loading/error con ternario o `&&`.
-- [ ] Listas: map + key única (id o name).
+- [ ] Props: un solo argumento (objeto); desestructurar para usar valores; no renderizar el objeto.
+- [ ] useState(ini) → [valor, setValor]; setter no devuelve valor; no llamar al setter durante el render.
+- [ ] Eventos: onClick/onChange/onSubmit con función; formularios: onSubmit en `<form>`, preventDefault, botón type="submit".
+- [ ] Listas en estado: no mutar (no push); usar setList([...list, item]), filter, map.
+- [ ] useEffect(callback, [deps]); vacío [] = solo al montar; cleanup si devuelves función; fetch en useEffect o en handler si es por botón.
+- [ ] Renderizado condicional: loading/error con ternario; setLoading(false) en .finally() del fetch.
+- [ ] Listas: map debe devolver JSX (paréntesis o return); key única desde datos (id o name); nunca key con setState.
+- [ ] Hijo que modifica estado del padre: pasar handlers como props (onBorrar, onToggle) desde el padre.
 
 ---
 
