@@ -385,13 +385,19 @@ Las mini apps **Contador**, **Todo list** y **Lista desde API** se pueden reutil
 
 ### 10.1. Ejercicios Pokedex (ruta única)
 
-Ruta alternativa: **una sola app tipo Pokedex** en 6 pasos, con lista, detalle y búsqueda usando [PokeAPI](https://pokeapi.co/) y Bootstrap. Al terminar tienes una mini app lista para migrarla a Redux en el [cap. 20](20-react-redux-bridge.md).
+Ruta alternativa: **una sola app tipo Pokedex** en **8 pasos**, con lista, detalle (tipos, stats, altura, peso, habilidades) y búsqueda usando [PokeAPI](https://pokeapi.co/) y Bootstrap. **En el plan cada paso incluye el markup Bootstrap listo** (clases y estructura); tú te centras en la **lógica React**: componentes, estado, fetch, props. Al terminar tienes una Pokedex funcional y presentable para migrarla a Redux en el [cap. 20](20-react-redux-bridge.md).
 
-**Stack:** Vite + React, Bootstrap (react-bootstrap o CDN), PokeAPI.
+**Stack:** Vite + React, Bootstrap vía CDN, PokeAPI.
+
+**Enlazar Bootstrap por CDN:** en el `index.html` del proyecto (raíz), añade en el `<head>` el CSS de Bootstrap (y opcionalmente el JS antes de `</body>` solo si usas modales/dropdowns):
+
+```html
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+```
 
 **Plan completo:** [PLAN-POKEDEX.md](../../ejercicios-js/19-react-desde-cero/PLAN-POKEDEX.md) (en la carpeta de ejercicios). Proyecto único en `ejercicios-js/19-react-desde-cero/pokedex-app/`.
 
-**Pasos (Tema 19):** 1) Proyecto base (Vite, Bootstrap, layout "Pokedex") · 2) Lista desde API (fetch, loading, error) · 3) Componente PokemonCard (sprite, nombre, id) · 4) Detalle al click (fetch por id, tipos, stats) · 5) Búsqueda por nombre (input controlado, filtrar lista) · 6) Pulir UI (Bootstrap, spinner, mensajes de error).
+**Pasos (Tema 19):** 1) Proyecto base y layout (Bootstrap listo) · 2) Lista desde API (fetch, loading, error) · 3) Componente PokemonCard (sprite, número, nombre) · 4) Grid de cards y clic para seleccionar · 5) Vista detalle (fetch por id, tipos, stats, altura, peso, habilidades) · 6) Botón cerrar y mostrar/ocultar detalle · 7) Búsqueda por nombre · 8) Mensajes vacíos y repaso.
 
 ---
 

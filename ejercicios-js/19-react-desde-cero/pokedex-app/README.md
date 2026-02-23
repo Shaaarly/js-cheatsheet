@@ -1,52 +1,22 @@
-# Pokedex — Proyecto único (Tema 19 + Tema 20)
+# Pokedex App (Tema 19 + 20)
 
-Mini app tipo Pokedex construida paso a paso: **Tema 19** en React (lista, detalle, búsqueda con PokeAPI) y **Tema 20** migrando a Redux en el mismo proyecto.
+**Plan paso a paso:** [../PLAN-POKEDEX.md](../PLAN-POKEDEX.md). La ruta tiene 8 pasos en React (lista, cards, detalle con tipos/stats/altura/peso/habilidades, búsqueda). Cada paso incluye **markup Bootstrap listo**; tú implementas la **lógica React** (componentes, estado, fetch, props). Después, tema 20: misma app con Redux.
 
-## Cómo empezar
+---
 
-1. **Crear el proyecto Vite** (desde la carpeta padre `19-react-desde-cero/`):
+# React + Vite
 
-   ```bash
-   npm create vite@latest pokedex-app -- --template react
-   cd pokedex-app
-   npm install
-   ```
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-2. **Añadir Bootstrap:**
+Currently, two official plugins are available:
 
-   ```bash
-   npm install react-bootstrap bootstrap
-   ```
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-   En `src/main.jsx` añade antes de tu App:
+## React Compiler
 
-   ```js
-   import 'bootstrap/dist/css/bootstrap.min.css';
-   ```
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-   (Opcional: en lugar de react-bootstrap, puedes enlazar solo el CSS de Bootstrap por CDN en `index.html` y usar las clases en el markup.)
+## Expanding the ESLint configuration
 
-3. **Seguir el plan:** Abre [../PLAN-POKEDEX.md](../PLAN-POKEDEX.md) y haz los pasos en orden. Los pasos 1–6 corresponden al **Tema 19 (React)**; los pasos 7–12 (sección "Tema 20 — Redux") se hacen en este mismo proyecto añadiendo Redux.
-
-4. **Instalar y configurar el linter (obligatorio):** En el examen no puede haber ningún error de linter. Después de `npm install`:
-
-   ```bash
-   npm install -D eslint eslint-plugin-react eslint-plugin-react-hooks eslint-plugin-react-refresh
-   npx eslint --init
-   ```
-
-   Elige: JavaScript, React, navegador. Añade en `package.json` el script `"lint": "eslint src/"` si no existe. Ejecuta `npm run lint` (o `npx eslint src/`) y **corrige todos los errores** antes de dar por terminado cada paso.
-
-5. **Arrancar en desarrollo:**
-
-   ```bash
-   npm run dev
-   ```
-
-## Estructura
-
-- Un solo proyecto en esta carpeta.
-- Tema 19: componentes, estado (useState/useEffect), lista desde PokeAPI, PokemonCard, detalle, búsqueda, UI con Bootstrap.
-- Tema 20: mismo código, añadiendo store, slices, thunks y selectores de Redux.
-
-Enunciados detallados de cada paso: [PLAN-POKEDEX.md](../PLAN-POKEDEX.md).
+If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
