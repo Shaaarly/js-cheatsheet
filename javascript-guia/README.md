@@ -82,6 +82,7 @@ Sigue el índice maestro en orden. Cada capítulo incluye ejemplos, trampas de e
 | 18 | [18 - Testing mental para examen](docs/18-exam-mental-test.md) | Ejercicios tipo examen por bloques |
 | 19 | [19 - React desde cero](docs/19-react-desde-cero.md) | Componentes, estado, efectos; mini apps para practicar |
 | 20 | [20 - Puente a React + Redux](docs/20-react-redux-bridge.md) | Inmutabilidad, reducers, async thunks; usa las mini apps del cap. 19 |
+| 20a | [20a - Ejemplo completo React + Redux](docs/20a-ejemplo-mini-app-redux.md) | Mini app de referencia: store, 2 slices, thunk, selectores, localStorage |
 | 21 | [21 - Apéndices](docs/21-appendices.md) | Tabla rápida, glosario, recursos |
 
 ### Referencia rápida
@@ -108,7 +109,7 @@ Sigue el índice maestro en orden. Cada capítulo incluye ejemplos, trampas de e
 - **DOM y eventos** → [15](docs/15-dom.md), [16](docs/16-events.md)  
 - **Storage** → [17](docs/17-storage-browser.md)  
 - **Examen** → [18](docs/18-exam-mental-test.md)  
-- **React** → [19](docs/19-react-desde-cero.md) · **React/Redux** → [20](docs/20-react-redux-bridge.md)  
+- **React** → [19](docs/19-react-desde-cero.md) · **React/Redux** → [20](docs/20-react-redux-bridge.md) · **Ejemplo completo Redux** → [20a](docs/20a-ejemplo-mini-app-redux.md)  
 
 ---
 

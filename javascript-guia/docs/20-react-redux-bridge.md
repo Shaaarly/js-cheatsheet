@@ -525,4 +525,6 @@ const normalized = list.reduce(
 
 ---
 
+**Ejemplo completo:** para ver todo esto aplicado en una mini app (store, dos slices, thunk, selectores, localStorage y componentes conectados), sigue el **[cap. 20a - Ejemplo completo React + Redux](20a-ejemplo-mini-app-redux.md)**.
+
 **[⬅ Volver al índice](../README.md)**
