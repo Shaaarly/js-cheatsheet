@@ -27,7 +27,7 @@
 
 ## Tabla rápida de métodos (resumen)
 
-Ver **[Cheat sheet](cheatsheet.md)** para tablas completas de Arrays, Strings, Object y Promises.
+Ver **[Cheat sheet](cheatsheet.md)** para tablas completas de Arrays, Strings, Object y Promises. Para React: **[Cheatsheet HTML y CSS en React](react-cheatsheet-html-css.md)** (datalist, formularios, `style`, `className`).
 
 ---
 

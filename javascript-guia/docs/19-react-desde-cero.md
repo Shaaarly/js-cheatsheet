@@ -19,6 +19,7 @@ Este capítulo permite aprender React desde cero para construir **mini apps** (e
 9. [Checklist rápido](#9-checklist-rápido) · [9.1 ESLint](#91-eslint-react-in-jsx-scope-y-prop-types)
 10. [Ejercicios](#10-ejercicios)
 11. [Ejercicios Pokedex (ruta única)](#101-ejercicios-pokedex-ruta-única)
+12. [Referencia: HTML y CSS en React](#12-referencia-html-y-css-en-react)
 
 ---
 
@@ -52,6 +53,24 @@ function Saludo() {
 - **Expresiones en JS:** entre llaves `{ }`. Ej: `{2 + 2}`, `{nombre}`, `{items.length}`.
 - **Atributos:** `className` en lugar de `class`; `htmlFor` en lugar de `for`. Estilos: objeto `style={{ color: "red" }}`.
 - **Comentarios:** `{/* comentario */}`.
+
+**Solo expresiones dentro de `{ }`:** No puedes usar sentencias como `for`, `if` o `while` dentro del JSX; solo expresiones que devuelvan un valor. Para repetir N elementos usa `Array.from` o `.map()`:
+
+```jsx
+// ❌ No válido: for es una sentencia
+{ for (let i = 0; i < n; i++) { return <div key={i}>...</div> } }
+
+// ✅ Generar N elementos
+{Array.from({ length: n }, (_, i) => (
+  <div key={i}>Elemento {i + 1}</div>
+))}
+```
+
+**Objeto `style` en React:** Es un objeto JavaScript: las propiedades van con **dos puntos** `:` (no con `=`). Los nombres de propiedades CSS se escriben en **camelCase** (ej. `backgroundColor`, `fontSize`). Para colores dinámicos (HSL) construye el string dentro del valor:
+
+```jsx
+<div style={{ backgroundColor: `hsl(${hue}, ${saturation}%, ${lightness}%)` }} />
+```
 
 ```jsx
 function Tarjeta({ titulo, activo }) {
@@ -252,6 +271,8 @@ return (
 );
 ```
 
+**Evitar bucle infinito con loading:** Si cuando `loading` es true **desmontas** el componente que tiene el `useEffect` que hace el fetch (p. ej. muestras solo `<Loading />` y no renderizas `<PokeData />`), al terminar el fetch pones `loading = false`, el componente vuelve a montarse, su `useEffect` se ejecuta de nuevo, llama otra vez al fetch, pone `loading = true`, se desmonta otra vez… y se repite el ciclo. **Solución:** no condicionar el montaje del componente que dispara el fetch a `!loading`. Por ejemplo: renderizar siempre el componente de datos y mostrar el spinner **dentro** de él o como overlay; o mantener el componente montado y solo alternar el contenido (spinner vs imagen) en el mismo árbol sin desmontar el hijo que tiene el efecto.
+
 **Cleanup (opcional):** si el callback devuelve una función, React la ejecuta al desmontar o antes de volver a ejecutar el efecto. Sirve para cancelar peticiones, limpiar timers o suscripciones.
 
 ```jsx
@@ -414,6 +435,16 @@ Ruta alternativa: **una sola app tipo Pokedex** en **8 pasos**, con lista, detal
 **Plan completo:** [PLAN-POKEDEX.md](../../ejercicios-js/19-react-desde-cero/PLAN-POKEDEX.md) (en la carpeta de ejercicios). Proyecto único en `ejercicios-js/19-react-desde-cero/pokedex-app/`.
 
 **Pasos (Tema 19):** 1) Proyecto base y layout (Bootstrap listo) · 2) Lista desde API (fetch, loading, error) · 3) Componente PokemonCard (sprite, número, nombre) · 4) Grid de cards y clic para seleccionar · 5) Vista detalle (fetch por id, tipos, stats, altura, peso, habilidades) · 6) Botón cerrar y mostrar/ocultar detalle · 7) Búsqueda por nombre · 8) Mensajes vacíos y repaso.
+
+---
+
+## 12. Referencia: HTML y CSS en React
+
+Para no dudar al usar elementos HTML y estilos en React, tienes una **referencia rápida** en un documento aparte:
+
+- **[Cheatsheet HTML y CSS en React](react-cheatsheet-html-css.md)** — elementos HTML útiles en React (`datalist`, formularios, `label`/`htmlFor`, etc.) y cómo aplicar CSS (objeto `style`, `className`, camelCase, unidades, clases condicionales).
+
+Consultarlo cuando uses `<input list="...">` con `<datalist>`, estilos dinámicos o clases según estado.
 
 ---
 
