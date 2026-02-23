@@ -119,6 +119,17 @@ function Contador() {
 
 **Importante:** **nunca** llames al setter durante el render del componente (en el cuerpo de la función, antes del return, ni en el JSX que se evalúa al pintar). Eso provoca un bucle infinito y el error *"Too many re-renders"*: render → setState → re-render → setState → … **Solución:** llamar al setter solo dentro de manejadores de eventos (`onClick`, `onChange`, `onSubmit`) o dentro de `useEffect`.
 
+**Setter en forma funcional:** en lugar de pasar el nuevo valor, puedes pasar una **función** que recibe el valor actual y devuelve el nuevo: `setN((c) => c - 1)`. React llama a esa función pasándole el estado actual como argumento (`c`); no es una variable que declares tú, sino el valor que React inyecta. Usa la forma funcional cuando el **nuevo estado se calcula a partir del anterior** (contadores, toggles) y sobre todo si: (1) hay **varias actualizaciones seguidas** en el mismo manejador (con `setCount(count + 1)` dos veces se usa el mismo `count` y solo cuenta una; con `setCount(c => c + 1)` dos veces cada una recibe el último valor y cuenta las dos), o (2) actualizas desde **código asíncrono** (setTimeout, fetch, await), donde `count` podría estar desactualizado por la closure. Cuando ya **tienes el valor nuevo** (input, respuesta API, etc.), usa la forma directa: `setNombre(e.target.value)`, `setLista(data.results)`, `setAbierto(true)`.
+
+```jsx
+// Depende del valor anterior → forma funcional
+<button onClick={() => setN((c) => c + 1)}>+1</button>
+<button onClick={() => setN((c) => c - 1)}>-1</button>
+
+// Valor nuevo que ya tienes → forma directa
+<input value={nombre} onChange={(e) => setNombre(e.target.value)} />
+```
+
 **Input controlado (cambiar un valor desde un input):** el input debe tener `value={estado}` y `onChange` que actualice ese estado.
 
 ```jsx
@@ -351,7 +362,7 @@ function ListaPokemon() {
 
 - [ ] Componente = función que devuelve JSX; nombre en mayúscula.
 - [ ] Props: un solo argumento (objeto); desestructurar para usar valores; no renderizar el objeto.
-- [ ] useState(ini) → [valor, setValor]; setter no devuelve valor; no llamar al setter durante el render.
+- [ ] useState(ini) → [valor, setValor]; setter no devuelve valor; no llamar al setter durante el render. Forma funcional setN((c) => c + 1) cuando el nuevo valor depende del anterior (varias actualizaciones o async); forma directa setX(valor) cuando ya tienes el valor (input, API).
 - [ ] Eventos: onClick/onChange/onSubmit con función; formularios: onSubmit en `<form>`, preventDefault, botón type="submit".
 - [ ] Listas en estado: no mutar (no push); usar setList([...list, item]), filter, map.
 - [ ] useEffect(callback, [deps]); vacío [] = solo al montar; cleanup si devuelves función; fetch en useEffect o en handler si es por botón.
