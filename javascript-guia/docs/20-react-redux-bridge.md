@@ -15,9 +15,10 @@ Recomendado tener hechas las **mini apps** del [cap. 19 (React desde cero)](19-r
 4. [Async thunks: promesas + async/await + fetch](#4-async-thunks-promesas--asyncawait--fetch)
 5. [Conexión React–Redux: Provider, useSelector, useDispatch](#5-conexión-reactredux-provider-useselector-usedispatch) · [5.1 Por qué useSelector recibe una función](#51-por-qué-useselector-recibe-una-función)
 6. [Patrones: datos normalizados, loading/error](#6-patrones-datos-normalizados-loadingerror)
-7. [Checklist rápido](#7-checklist-rápido)
-8. [Mini-ejercicios](#8-mini-ejercicios)
-9. [Soluciones](#9-soluciones)
+7. [Errores frecuentes y dudas habituales](#7-errores-frecuentes-y-dudas-habituales)
+8. [Checklist rápido](#8-checklist-rápido)
+9. [Mini-ejercicios](#9-mini-ejercicios)
+10. [Soluciones](#10-soluciones)
 
 ---
 
@@ -410,7 +411,154 @@ export const selectFilteredList = createSelector(
 
 ---
 
-## 7. Checklist rápido
+## 7. Errores frecuentes y dudas habituales
+
+Resumen de fallos típicos al conectar React y Redux (formularios, thunks, varios datos como weather y forecast) para poder consultarlos cuando algo "no hace nada" o "no se muestra".
+
+### 7.1. "X is not a function" al hacer dispatch de una acción
+
+**Causa:** En `createSlice`, las **acciones generadas** tienen exactamente el **mismo nombre que el reducer**. Si en el slice defines el reducer como `setTempUnit` pero exportas `setUnit`, esa acción no existe (solo existe `setTempUnit`).
+
+```js
+// En el slice:
+reducers: {
+  setTempUnit(state, action) { state.tempUnit = action.payload; },
+}
+// Export: lo que existe es setTempUnit, no setUnit
+export const { setCity, setTempUnit } = weatherSlice.actions;  // ✅
+// Si en el componente quieres usar "setUnit", en el slice exporta con alias:
+export const { setCity, setTempUnit: setUnit } = weatherSlice.actions;
+```
+
+En el componente debes importar y usar el **nombre real** de la acción (el del reducer) o el alias que hayas exportado.
+
+### 7.2. El thunk "no hace nada" o va a rejected sin ver nada
+
+Varias causas habituales:
+
+**a) Variable no definida en el thunk.** Si usas `res` (o cualquier variable) sin haberla asignado, se lanza `ReferenceError` y el thunk falla antes de hacer el fetch. Ejemplo erróneo:
+
+```js
+// ❌ res no existe
+if (!res.ok) return rejectWithValue(await res.text());
+return fetchData(url);
+```
+
+Solución: o bien **solo** `return fetchData(url);` (y que `fetchData` internamente haga el chequeo de `response.ok` y lance o use `rejectWithValue`), o bien asignar antes: `const res = await fetch(url);` y luego usar `res`.
+
+**b) El thunk solo recibe un argumento.** `createAsyncThunk` pasa al payload creator **un único** argumento: el que pones en `dispatch(fetchWeather(???))`. Si haces `dispatch(fetchWeather(city, unit))`, el segundo argumento **no se envía**; el payload será solo `city`. Dentro del thunk tendrías que recibir un **objeto** y pasarlo desde el componente:
+
+```js
+// En el componente:
+const { city, tempUnit } = useSelector((state) => state.weather);
+dispatch(fetchWeatherData({ city, tempUnit }));  // un solo objeto
+
+// En el slice:
+async ({ city, tempUnit }, { rejectWithValue }) => {
+  const url = `...?q=${city}&units=${tempUnit}&...`;
+  return fetchData(url);
+}
+```
+
+**c) Leer claves que no existen en el estado.** Si en el slice el estado tiene `tempUnit` pero en el componente haces `const { city, unit } = useSelector(...)`, `unit` será siempre `undefined`. Usa los nombres exactos del slice: `tempUnit`.
+
+**d) Ciudad vacía.** Si el usuario dispara la búsqueda (p. ej. clic derecho) sin haber escrito en el input, `city` puede ser `""`. Conviene no disparar el thunk si `!city.trim()` o mostrar un mensaje.
+
+### 7.3. Añadir un segundo thunk (p. ej. forecast) con sus extraReducers
+
+Cada thunk debe tener un **typePrefix** distinto; si no, las acciones pending/fulfilled/rejected se llaman igual y no puedes asignar cada resultado al campo correcto del estado.
+
+```js
+export const fetchWeatherData = createAsyncThunk("weather/fetch", async ...);
+export const fetchForecastData = createAsyncThunk("weather/fetchForecast", async ...);  // distinto
+```
+
+En **extraReducers**, en el mismo `builder`, añade los tres casos del segundo thunk (pending, fulfilled, rejected). En el fulfilled del forecast guardas en `state.forecast`:
+
+```js
+extraReducers: (builder) => {
+  builder
+    .addCase(fetchWeatherData.pending, (state) => { state.loading = true; state.error = null; })
+    .addCase(fetchWeatherData.fulfilled, (state, action) => { state.loading = false; state.weather = action.payload; })
+    .addCase(fetchWeatherData.rejected, (state, action) => { state.loading = false; state.error = action.payload ?? action.error.message; })
+    .addCase(fetchForecastData.pending, (state) => { state.loading = true; state.error = null; })
+    .addCase(fetchForecastData.fulfilled, (state, action) => { state.loading = false; state.forecast = action.payload; })
+    .addCase(fetchForecastData.rejected, (state, action) => { state.loading = false; state.error = action.payload ?? action.error.message; });
+},
+```
+
+Si disparas ambos thunks en paralelo, poner `state.loading = false` en cada fulfilled/rejected hace que el loading se oculte cuando termine el primero; para esperar a ambos haría falta lógica extra (contador o flags).
+
+### 7.4. "No se muestra nada" en el componente que lee datos del API
+
+**Causa 1 – Selector y destructuring incorrectos.** El slice guarda el objeto del clima en `state.weather.weather` (por ejemplo). Si el valor inicial es `weather: []` y haces `const { weather } = useSelector((state) => state.weather.weather)`, estás destructuring un array; un array no tiene propiedad `weather`, así que obtienes `undefined`. Y si intentas renderizar `<p>{weather}</p>`, React no muestra un objeto/array de forma legible.
+
+**Solución:** Leer el **objeto completo** del store y mostrar **propiedades concretas** del objeto de la API (nombre de ciudad, temperatura, descripción, etc.):
+
+```jsx
+const weatherData = useSelector((state) => state.weather.weather);
+const isLoaded = weatherData && typeof weatherData === "object" && !Array.isArray(weatherData);
+
+return (
+  <>
+    <h2>Clima actual</h2>
+    {isLoaded && (
+      <>
+        <p>{weatherData.name}</p>
+        <p>Temperatura: {weatherData.main?.temp}°</p>
+        <p>{weatherData.weather?.[0]?.description}</p>
+        <p>Humedad: {weatherData.main?.humidity}%</p>
+      </>
+    )}
+  </>
+);
+```
+
+**Causa 2 – Valor inicial truthy.** Si en el slice tienes `weather: []`, un array vacío es truthy. Entonces en App algo como `{ weather && <Weather /> }` (donde `weather` es ese array) siempre muestra el componente aunque no haya datos. Mejor usar `weather: null` como inicial y entonces `{ weather && <Weather /> }` tiene el significado esperado, o comprobar explícitamente que es el objeto cargado: `weatherData && typeof weatherData === "object" && !Array.isArray(weatherData)`.
+
+### 7.5. Forecast: qué selector usar y cómo explorar la estructura
+
+- El dato de **predicción** suele estar en **otro campo** del estado, por ejemplo `state.weather.forecast`. No uses `state.weather.weather` para el forecast.
+- Si no conoces la estructura de la respuesta:
+  - **Consola:** `console.log("forecast:", forecastData);` después del useSelector y revisar en DevTools.
+  - **En pantalla:** `<pre>{JSON.stringify(forecastData, null, 2)}</pre>` para ver el JSON con indentación.
+- Muchas APIs de forecast devuelven un **objeto con una lista**, no un array en la raíz: `{ list: [ {...}, {...} ], city: {...} }`. Entonces itera sobre `forecastData.list` (y opcionalmente `.slice(0, 5)`), no sobre `forecastData.map(...)`.
+
+```jsx
+const forecastData = useSelector((state) => state.weather.forecast);
+const isLoaded = forecastData?.list?.length > 0;
+
+return (
+  <>
+    <h2>Predicción</h2>
+    {isLoaded && (
+      <ul>
+        {forecastData.list.slice(0, 5).map((item) => (
+          <li key={item.dt}>
+            {new Date(item.dt * 1000).toLocaleString()} — {item.main?.temp}° — {item.weather?.[0]?.description}
+          </li>
+        ))}
+      </ul>
+    )}
+  </>
+);
+```
+
+### 7.6. Clic derecho (contextmenu) en React
+
+Para que "Buscar" se ejecute con **botón derecho** (como en el original con `addEventListener('contextmenu', ...)`), usa la prop **onContextMenu** en el botón y evita el menú del navegador con `e.preventDefault()`:
+
+```jsx
+<button type="button" onContextMenu={(e) => { e.preventDefault(); dispatch(fetchWeatherData({ city, tempUnit })); }}>
+  Buscar clima
+</button>
+```
+
+Asegúrate de pasar el payload correcto (objeto con `city` y `tempUnit` si el thunk lo espera así) y de leer `tempUnit` del estado, no `unit`.
+
+---
+
+## 8. Checklist rápido
 
 - [ ] Proyecto: store en `store/store.js`, slice(s) en `features/<nombre>/<nombre>Slice.js`, Provider en main.jsx envolviendo App.
 - [ ] initialState: valor inicial del slice (global, persistente en sesión); solo cambia vía reducers.
@@ -422,7 +570,7 @@ export const selectFilteredList = createSelector(
 
 ---
 
-## 8. Mini-ejercicios
+## 9. Mini-ejercicios
 
 1. Dado un estado `{ items: [{ id: 1, qty: 2 }, { id: 2, qty: 1 }] }`, escribe la actualización **inmutable** para incrementar `qty` del item con id 2 en 1.
 2. Escribe un reducer que maneje las acciones "counter/increment" y "counter/decrement" (estado: { value: 0 }).
@@ -433,7 +581,7 @@ export const selectFilteredList = createSelector(
 
 **Con mini apps (cap. 19):** opcionalmente, toma tu **Contador** o **Lista desde API** (PokeAPI) y añade Redux: store con el reducer correspondiente, dispatch de acciones desde el componente, lectura del estado con useSelector. Para la lista, sustituye el useEffect + useState por un thunk que haga fetch y guarde los datos en el store.
 
-### 7.1. Ejercicios Pokedex (Redux)
+### 8.1. Ejercicios Pokedex (Redux)
 
 Si has seguido la **ruta Pokedex** del [cap. 19](19-react-desde-cero.md) (app única en `pokedex-app/`), puedes migrar esa misma app a Redux en 6 pasos. El plan con los enunciados está en [PLAN-POKEDEX.md](../../ejercicios-js/19-react-desde-cero/PLAN-POKEDEX.md) (sección "Tema 20 — Redux").
 
@@ -441,7 +589,7 @@ Si has seguido la **ruta Pokedex** del [cap. 19](19-react-desde-cero.md) (app ú
 
 ---
 
-## 9. Soluciones
+## 10. Soluciones
 
 <details>
 <summary>1. Incrementar qty de id 2</summary>
