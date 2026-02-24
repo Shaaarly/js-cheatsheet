@@ -11,10 +11,11 @@
 3. [Delegación de eventos](#3-delegación-de-eventos)
 4. [Forms: submit, preventDefault, input/change](#4-forms-submit-preventdefault-inputchange)
 5. [Objeto evento y métodos útiles](#5-objeto-evento-y-métodos-útiles)
-6. [Errores típicos y trampas de examen](#6-errores-típicos-y-trampas-de-examen)
-7. [Checklist rápido](#7-checklist-rápido)
-8. [Mini-ejercicios](#8-mini-ejercicios)
-9. [Soluciones](#9-soluciones)
+6. [De JS básico a React: cómo cambian los eventos](#6-de-js-básico-a-react-cómo-cambian-los-eventos)
+7. [Errores típicos y trampas de examen](#7-errores-típicos-y-trampas-de-examen)
+8. [Checklist rápido](#8-checklist-rápido)
+9. [Mini-ejercicios](#9-mini-ejercicios)
+10. [Soluciones](#10-soluciones)
 
 ---
 
@@ -110,7 +111,39 @@ campo.addEventListener("input", (e) => {
 
 ---
 
-## 6. Errores típicos y trampas de examen
+## 6. De JS básico a React: cómo cambian los eventos
+
+En **JS en el DOM** registras listeners con `addEventListener` o con la propiedad `onclick`; en **React** usas **props** con nombres en **camelCase** y pasas una **función** (no una invocación). Esta tabla sirve de referencia para consultar la equivalencia.
+
+| JS (DOM) | React (JSX) | Notas |
+|----------|-------------|--------|
+| `element.addEventListener("click", fn)` o `element.onclick = fn` | `onClick={fn}` | Nombre del evento en camelCase con prefijo `on`. |
+| `addEventListener("change", fn)` | `onChange={fn}` | Inputs, select, textarea. |
+| `addEventListener("submit", fn)` | `onSubmit={fn}` | En el `<form>`. Sigue haciendo `e.preventDefault()` dentro del handler. |
+| `addEventListener("input", fn)` | `onInput={fn}` o `onChange={fn}` | En React se usa mucho `onChange` para inputs de texto. |
+| `addEventListener("keydown", fn)` | `onKeyDown={fn}` | Teclado. |
+| `addEventListener("contextmenu", fn)` | `onContextMenu={fn}` | Clic derecho. |
+
+**Reglas importantes en React:**
+
+- **Pasar función, no llamada:** `onClick={handleClick}` (correcto). `onClick={handleClick()}` ejecutaría la función en cada render y pasaría el valor de retorno.
+- **Con argumentos:** `onClick={() => handleDelete(id)}` o `onClick={handleDelete.bind(null, id)}`. Así el clic dispara la llamada con el id.
+- **Objeto evento:** el handler recibe el **evento sintético** de React (SyntheticEvent), con la misma interfaz útil: `e.target`, `e.preventDefault()`, `e.stopPropagation()`. Para formularios: `e.target.value`, `e.target.checked`.
+- **preventDefault:** se sigue usando dentro del handler (p. ej. en `onSubmit` para no recargar la página).
+
+```jsx
+// React
+<button onClick={handleClick}>Pulsar</button>
+<form onSubmit={(e) => { e.preventDefault(); enviar(); }}>
+  <input type="text" onChange={(e) => setNombre(e.target.value)} value={nombre} />
+</form>
+```
+
+Consulta también el [cheatsheet HTML y CSS en React](react-cheatsheet-html-css.md) para formularios y el [cap. 19](19-react-desde-cero.md) para eventos y estado.
+
+---
+
+## 7. Errores típicos y trampas de examen
 
 - **preventDefault** no detiene la propagación; **stopPropagation** no evita el comportamiento por defecto.
 - En delegación, **target** puede ser un hijo (ej. texto dentro de un div); usar **closest** para encontrar la fila/card.
@@ -119,7 +152,7 @@ campo.addEventListener("input", (e) => {
 
 ---
 
-## 7. Checklist rápido
+## 8. Checklist rápido
 
 - [ ] addEventListener (tipo, listener, options); removeEventListener con misma referencia.
 - [ ] Fases: capture → target → bubbling; preventDefault vs stopPropagation.
@@ -129,7 +162,7 @@ campo.addEventListener("input", (e) => {
 
 ---
 
-## 8. Mini-ejercicios
+## 9. Mini-ejercicios
 
 1. Registra un listener en un botón que al hacer click muestre el texto del botón (e.target.textContent).
 2. En un formulario con id "pedido", evita el envío por defecto y en su lugar muestra por consola un objeto con name → value de cada campo (usa FormData).
@@ -140,7 +173,7 @@ campo.addEventListener("input", (e) => {
 
 ---
 
-## 9. Soluciones
+## 10. Soluciones
 
 <details>
 <summary>1. Click y texto del botón</summary>

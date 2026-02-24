@@ -10,10 +10,11 @@
 2. [JSON.stringify y JSON.parse](#2-jsonstringify-y-jsonparse)
 3. [Cookies (mínimo)](#3-cookies-mínimo)
 4. [Casos reales](#4-casos-reales)
-5. [Errores típicos y trampas de examen](#5-errores-típicos-y-trampas-de-examen)
-6. [Checklist rápido](#6-checklist-rápido)
-7. [Mini-ejercicios](#7-mini-ejercicios)
-8. [Soluciones](#8-soluciones)
+5. [De JS básico a React: uso de storage](#5-de-js-básico-a-react-uso-de-storage)
+6. [Errores típicos y trampas de examen](#6-errores-típicos-y-trampas-de-examen)
+7. [Checklist rápido](#7-checklist-rápido)
+8. [Mini-ejercicios](#8-mini-ejercicios)
+9. [Soluciones](#9-soluciones)
 
 ---
 
@@ -107,7 +108,37 @@ localStorage.removeItem("token");
 
 ---
 
-## 5. Errores típicos y trampas de examen
+## 5. De JS básico a React: uso de storage
+
+La **API es la misma**: `localStorage.getItem`, `setItem`, `removeItem`, `JSON.stringify`/`JSON.parse`. En React lo que cambia es **dónde y cuándo** llamarla para no romper el ciclo de render ni causar problemas si más adelante usas SSR.
+
+**Cuándo leer:**
+
+- **Estado inicial:** al crear el estado con `useState`, puedes leer en el inicializador (función) para no hacerlo en cada render:  
+  `useState(() => JSON.parse(localStorage.getItem("key") ?? "[]"))`
+- **Redux:** en el `initialState` del slice, llamar a una función que lea de localStorage (ej. `loadFavorites()` en el [ejemplo 20a](20a-ejemplo-mini-app-redux.md)).
+- **useEffect:** si necesitas leer al montar y reaccionar a algo más (ej. pestaña), leer dentro de `useEffect`.
+
+**Cuándo escribir:**
+
+- En **event handlers** (onClick, onSubmit) cuando el usuario guarda preferencias o favoritos.
+- En **Redux:** dentro del reducer que actualiza ese dato (ej. al añadir favorito: actualizar estado y hacer `localStorage.setItem(...)`).
+- Opcionalmente en **useEffect** que dependa del estado a persistir: `useEffect(() => { localStorage.setItem("key", JSON.stringify(state)); }, [state]);`
+
+**Resumen para consultar:**
+
+| Objetivo | Dónde en React |
+|----------|----------------|
+| Valor inicial de estado | `useState(() => JSON.parse(localStorage.getItem("key") ?? "[]"))` o `initialState` del slice leyendo de localStorage. |
+| Guardar al cambiar algo | En el handler (setState + setItem) o en el reducer (state + setItem). |
+| Sincronizar estado con storage | useEffect que escuche el estado y haga setItem, o escribir en el mismo sitio donde actualizas estado (reducer/handler). |
+| Persistir solo parte del estado (ej. favoritos) | Redux: leer en initialState; escribir en los reducers que modifican favoritos. Alternativa: [redux-persist](https://github.com/rt2zz/redux-persist). |
+
+No conviene leer `localStorage` directamente en el cuerpo del componente durante el render (puede dar hidratación incorrecta si algún día usas SSR). Mejor en inicializador de useState, en initialState del slice o en useEffect. Para más contexto de estado global: [cap. 20](20-react-redux-bridge.md) y [20a - Ejemplo completo](20a-ejemplo-mini-app-redux.md).
+
+---
+
+## 6. Errores típicos y trampas de examen
 
 - **Solo strings**: si guardas un objeto sin stringify, se guarda como "[object Object]". Siempre stringify para objetos/arrays.
 - **null al leer**: getItem devuelve null si no existe; al parsear usar `JSON.parse(localStorage.getItem("key") ?? "null")` o comprobar null antes.
@@ -116,7 +147,7 @@ localStorage.removeItem("token");
 
 ---
 
-## 6. Checklist rápido
+## 7. Checklist rápido
 
 - [ ] localStorage persistente; sessionStorage por pestaña; ambos string clave/valor.
 - [ ] getItem, setItem, removeItem, clear; guardar objetos con JSON.stringify.
@@ -126,7 +157,7 @@ localStorage.removeItem("token");
 
 ---
 
-## 7. Mini-ejercicios
+## 8. Mini-ejercicios
 
 1. Guarda en localStorage la clave "ultimaVisita" con la fecha actual en ISO. Luego léela y muestrala por consola.
 2. Implementa get/set para un objeto "config" en localStorage (get devuelve objeto o {}, set guarda el objeto con stringify).
@@ -137,7 +168,7 @@ localStorage.removeItem("token");
 
 ---
 
-## 8. Soluciones
+## 9. Soluciones
 
 <details>
 <summary>1. ultimaVisita en localStorage</summary>
