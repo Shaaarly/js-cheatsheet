@@ -10,7 +10,7 @@
 2. [Parseo y comprobaciones](#2-parseo-y-comprobaciones)
 3. [Math](#3-math)
 4. [Intl (formato e idioma)](#4-intl-formato-e-idioma)
-5. [Date](#5-date)
+5. [Date](#5-date) · [5.1 Creación](#51-creación) · [5.2 Partes (getters)](#52-partes-de-la-fecha-getters-hora-local) · [5.3 getTime / toISOString](#53-milisegundos-y-string-iso-utc) · [5.4 Formatear (locale)](#54-formatear-para-pantalla-locale) · [5.5 Setters](#55-setters-mutan-el-date) · [5.6 Timestamp API](#56-timestamp-desde-api-segundos--date) · [5.7 Invalid Date](#57-invalid-date-y-comprobación) · [5.8 Resumen output](#58-resumen-de-métodos-output-de-ejemplo) · [5.9 Casos reales](#59-casos-reales)
 6. [Errores típicos y trampas de examen](#6-errores-típicos-y-trampas-de-examen)
 7. [Checklist rápido](#7-checklist-rápido)
 8. [Mini-ejercicios](#8-mini-ejercicios)
@@ -127,39 +127,214 @@ fmtDate.format(new Date()); // "18 feb 2025, 12:30"
 
 ## 5. Date
 
-- **Date** trabaja en **milisegundos** desde el epoch (1 enero 1970 UTC).
-- Los **meses son 0-indexados**: 0 = enero, 11 = diciembre (muy habitual en exámenes).
+- **Date** trabaja en **milisegundos** desde el epoch (1 enero 1970 00:00:00 UTC).
+- Los **meses son 0-indexados**: **0 = enero**, **11 = diciembre** (muy habitual en exámenes).
+- Todas las horas son en la **zona local** del navegador, salvo cuando se usa UTC (getUTC*, toISOString).
 
-### Creación: parámetros
+En los ejemplos se usa una fecha fija para que el output sea predecible: **26 de febrero de 2025, 15:30:45** (miércoles).
 
-| Constructor | Parámetros | Ejemplo |
-|-------------|------------|---------|
-| `new Date()` | Ninguno | Fecha/hora actual. |
-| `new Date(ms)` | Milisegundos desde 01/01/1970 UTC | `new Date(0)` = epoch. |
-| `new Date(año, mes, día?, h?, m?, s?, ms?)` | **mes es 0-11**. Resto opcional. | `new Date(2025, 0, 1)` = 1 enero 2025. |
-| `new Date(stringISO)` | String ISO 8601 | `new Date("2025-02-18T12:00:00.000Z")`. |
+---
 
-### Métodos get/set (los set mutan el Date)
+### 5.1. Creación
 
-| Método | Devuelve / efecto |
-|--------|-------------------|
-| `getFullYear()`, `getMonth()`, `getDate()` | Año (4 dígitos), mes (0-11), día del mes (1-31). |
-| `getHours()`, `getMinutes()`, `getSeconds()` | Hora, minutos, segundos (locale). |
-| `getTime()` | **Milisegundos** desde epoch (número); útil para restar fechas. |
-| `toISOString()` | String en UTC, ej. `"2025-02-18T10:00:00.000Z"`. |
-| `getDay()` | Día de la semana 0-6 (0 = domingo). |
-| `setDate(n)`, `setMonth(n)`, … | Modifican el Date; no devuelven una nueva fecha. |
+| Constructor | Parámetros | Ejemplo y output típico |
+|-------------|------------|--------------------------|
+| `new Date()` | Ninguno | Fecha/hora **actual** en el momento de ejecución. |
+| `new Date(ms)` | Milisegundos desde 01/01/1970 UTC | `new Date(0)` → 1 ene 1970 00:00:00 UTC. |
+| `new Date(año, mes, día?, h?, m?, s?, ms?)` | **mes 0–11**. Día 1–31. Resto opcional (0 si se omite). | Ver abajo. |
+| `new Date(stringISO)` | String ISO 8601 | `new Date("2025-02-26T14:30:00.000Z")` → esa fecha en UTC. |
 
 ```js
-const ahora = new Date();
-const manana = new Date(ahora);
-manana.setDate(manana.getDate() + 1);
+// Fecha fija: 26 febrero 2025, 15:30:45 (hora local)
+// Sintaxis: (año, mes, día, hora, minuto, segundo, milisegundo)
+const d = new Date(2025, 1, 26, 15, 30, 45, 0);
+// mes 1 = febrero (0=ene, 1=feb, ..., 11=dic)
 
-const iso = ahora.toISOString(); // "2025-02-18T..."
-const desdeApi = new Date("2025-02-18T12:00:00Z");
+new Date();                    // ahora
+new Date(0);                   // 01/01/1970 00:00:00 UTC
+new Date(2025, 0, 1);          // 1 enero 2025, 00:00:00
+new Date("2025-02-26T12:00:00.000Z");  // 26 feb 2025 12:00 UTC (como string ISO)
 ```
 
-**Caso real — diferencia en días:**
+---
+
+### 5.2. Partes de la fecha (getters, hora local)
+
+Devuelven **números**. El mes es **0–11**; el día del mes es **1–31**; el día de la semana es **0–6** (0 = domingo).
+
+```js
+const d = new Date(2025, 1, 26, 15, 30, 45, 123);
+
+d.getFullYear();   // 2025  — año (4 dígitos)
+d.getMonth();      // 1     — mes (0=febrero)
+d.getDate();       // 26    — día del mes (1-31)
+d.getDay();        // 3     — día de la semana (0=domingo → 3=miércoles)
+
+d.getHours();      // 15
+d.getMinutes();    // 30
+d.getSeconds();    // 45
+d.getMilliseconds(); // 123
+```
+
+**Resumen rápido:**
+
+| Método | Rango / significado | Ejemplo output (26 feb 2025, miércoles) |
+|--------|---------------------|----------------------------------------|
+| `getFullYear()` | Año (número) | `2025` |
+| `getMonth()` | 0 = enero … 11 = diciembre | `1` |
+| `getDate()` | 1–31 (día del mes) | `26` |
+| `getDay()` | 0 = domingo … 6 = sábado | `3` |
+| `getHours()` | 0–23 | `15` |
+| `getMinutes()` | 0–59 | `30` |
+| `getSeconds()` | 0–59 | `45` |
+| `getMilliseconds()` | 0–999 | `123` |
+
+---
+
+### 5.3. Milisegundos y string ISO (UTC)
+
+**getTime()** devuelve los **milisegundos** desde el 01/01/1970 00:00:00 UTC. Sirve para **restar fechas** y obtener diferencias.
+
+**toISOString()** devuelve un **string en UTC** con formato ISO 8601. Muy usado para enviar fechas a APIs o guardarlas.
+
+```js
+const d = new Date(2025, 1, 26, 15, 30, 45, 0);
+
+d.getTime();
+// 1740574245000  (número; depende de la zona horaria al crear d)
+
+d.toISOString();
+// "2025-02-26T14:30:45.000Z"  (si estás en UTC+1; en UTC es 14:30)
+```
+
+**Diferencia entre dos fechas (en días):**
+
+```js
+const d1 = new Date(2025, 0, 1);   // 1 enero 2025
+const d2 = new Date(2025, 1, 26);  // 26 febrero 2025
+
+const ms = d2 - d1;   // resta de Date usa getTime() por detrás
+// 4838400000  (ms entre ambas)
+
+const dias = Math.floor(ms / (24 * 60 * 60 * 1000));
+// 56  (días entre el 1 ene y el 26 feb)
+```
+
+---
+
+### 5.4. Formatear para pantalla (locale)
+
+**toLocaleDateString(locale?, options?)**, **toLocaleTimeString(...)**, **toLocaleString(...)** devuelven strings según el idioma y la zona del navegador.
+
+```js
+const d = new Date(2025, 1, 26, 15, 30, 45);
+
+d.toLocaleDateString("es-ES");
+// "26/2/2025"  (formato corto en español)
+
+d.toLocaleDateString("es-ES", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+// "miércoles, 26 de febrero de 2025"
+
+d.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" });
+// "15:30"
+
+d.toLocaleString("es-ES", { dateStyle: "short", timeStyle: "short" });
+// "26/2/2025, 15:30"
+```
+
+**Opciones útiles para fecha:** `weekday`, `year`, `month`, `day`; o `dateStyle: "short" | "medium" | "long" | "full"`.  
+**Para hora:** `hour`, `minute`, `second`; o `timeStyle: "short" | "medium" | "long" | "full"`.
+
+---
+
+### 5.5. Setters (mutan el Date)
+
+Los métodos **setDate**, **setMonth**, **setFullYear**, **setHours**, etc. **modifican** el objeto Date y devuelven los **milisegundos** resultantes (no un nuevo Date). Si quieres mantener la fecha original, crea una copia antes.
+
+```js
+const d = new Date(2025, 1, 26, 15, 30, 0);
+
+d.setDate(1);
+// d ahora es 1 febrero 2025, 15:30:00
+
+d.setMonth(0);   // 0 = enero
+// d ahora es 1 enero 2025, 15:30:00
+
+d.setDate(d.getDate() + 7);
+// d ahora es 8 enero 2025 (sumar 7 días)
+```
+
+**Sumar un día sin mutar la fecha original:**
+
+```js
+const hoy = new Date(2025, 1, 26);
+const manana = new Date(hoy);   // copia
+manana.setDate(manana.getDate() + 1);
+// hoy sigue siendo 26 feb; manana es 27 feb
+```
+
+---
+
+### 5.6. Timestamp desde API (segundos → Date)
+
+Muchas APIs (p. ej. OpenWeather) devuelven fechas en **segundos** desde el epoch, no milisegundos. Para convertirlas en Date, multiplica por 1000:
+
+```js
+const timestampSegundos = 1740574245;  // lo que devuelve la API
+const d = new Date(timestampSegundos * 1000);
+
+d.toLocaleString("es-ES");
+// "26/2/2025, 15:30:45"  (según zona)
+```
+
+Para **mostrar** solo la fecha legible:
+
+```js
+new Date(timestampSegundos * 1000).toLocaleString("es-ES", { dateStyle: "short", timeStyle: "short" });
+```
+
+---
+
+### 5.7. Invalid Date y comprobación
+
+Si el string o los parámetros no son válidos, se crea una fecha “inválida”. Al usar **getTime()** devuelve **NaN**. No compares fechas con `===` (compara referencias); usa **getTime()** o la resta.
+
+```js
+const invalida = new Date("esto no es una fecha");
+invalida.getTime();   // NaN
+
+// Comprobar si una fecha es válida:
+function esFechaValida(date) {
+  return date instanceof Date && !Number.isNaN(date.getTime());
+}
+```
+
+---
+
+### 5.8. Resumen de métodos (output de ejemplo)
+
+Con `const d = new Date(2025, 1, 26, 15, 30, 45, 0)` (26 feb 2025, 15:30:45):
+
+| Método | Output |
+|--------|--------|
+| `d.getFullYear()` | `2025` |
+| `d.getMonth()` | `1` (febrero) |
+| `d.getDate()` | `26` |
+| `d.getDay()` | `3` (miércoles) |
+| `d.getHours()` | `15` |
+| `d.getMinutes()` | `30` |
+| `d.getSeconds()` | `45` |
+| `d.getTime()` | número de ms (ej. `1740574245000`) |
+| `d.toISOString()` | `"2025-02-26T14:30:45.000Z"` (UTC) |
+| `d.toLocaleDateString("es-ES")` | `"26/2/2025"` |
+| `d.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" })` | `"15:30"` |
+
+---
+
+### 5.9. Casos reales
+
+**Diferencia en días entre dos fechas:**
+
 ```js
 function diasEntre(d1, d2) {
   const ms = Math.abs(d2 - d1);
@@ -167,12 +342,21 @@ function diasEntre(d1, d2) {
 }
 ```
 
-**Caso real — formatear para API:**
+**Formatear fecha para enviar a una API (solo fecha YYYY-MM-DD):**
+
 ```js
-const payload = {
-  fecha: new Date().toISOString(),
-  fechaSolo: new Date().toISOString().slice(0, 10) // "2025-02-18"
-};
+const hoy = new Date();
+hoy.toISOString().slice(0, 10);   // "2025-02-26"
+```
+
+**Primer día del mes de una fecha:**
+
+```js
+function primerDiaDelMes(d) {
+  const r = new Date(d);
+  r.setDate(1);
+  return r;
+}
 ```
 
 ---
