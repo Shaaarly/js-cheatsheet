@@ -15,7 +15,7 @@ Recomendado tener hechas las **mini apps** del [cap. 19 (React desde cero)](19-r
 4. [Async thunks: promesas + async/await + fetch](#4-async-thunks-promesas--asyncawait--fetch)
 5. [Conexión React–Redux: Provider, useSelector, useDispatch](#5-conexión-reactredux-provider-useselector-usedispatch) · [5.1 Por qué useSelector recibe una función](#51-por-qué-useselector-recibe-una-función)
 6. [Patrones: datos normalizados, loading/error](#6-patrones-datos-normalizados-loadingerror)
-7. [Errores frecuentes y dudas habituales](#7-errores-frecuentes-y-dudas-habituales)
+7. [Errores frecuentes y dudas habituales](#7-errores-frecuentes-y-dudas-habituales) · [7.7 useSelector selector](#77-useselector-you-must-pass-a-selector) · [7.8 Input no escribe](#78-el-input-del-formulario-no-deja-escribir) · [7.9 Retorno del thunk](#79-usar-los-datos-devueltos-por-el-thunk) · [7.10 Lista no se muestra](#710-la-lista-de-resultados-no-se-muestra) · [7.11 Favoritos no persisten](#711-favoritos-no-se-persisten) · [7.12 Rutas de importación](#712-rutas-de-importación) · [7.13 Botón Next](#713-botón-next-no-hace-nada-o-siempre-deshabilitado) · [7.14 Datos null](#714-imagen-o-datos-null)
 8. [Checklist rápido](#8-checklist-rápido)
 9. [Mini-ejercicios](#9-mini-ejercicios)
 10. [Soluciones](#10-soluciones)
@@ -356,6 +356,8 @@ Es decir: tú no pasas el estado (no lo tienes). Pasas una función que dice "da
 useSelector(state => state.weather.weather);  // Redux hace: tuFuncion(estadoActual)
 ```
 
+**Errores frecuentes:** No llames a `useSelector` dentro de la función selector ni pases un valor (p. ej. `state.serie.searchQuery`) como si fuera el selector; el primer argumento debe ser siempre una función `state => valor`. Si ves "You must pass a selector to useSelector", revisa que estés pasando esa función. Detalle en [§7.7](#77-useselector-you-must-pass-a-selector).
+
 ---
 
 ## 6. Patrones: datos normalizados, loading/error
@@ -555,6 +557,129 @@ Para que "Buscar" se ejecute con **botón derecho** (como en el original con `ad
 ```
 
 Asegúrate de pasar el payload correcto (objeto con `city` y `tempUnit` si el thunk lo espera así) y de leer `tempUnit` del estado, no `unit`.
+
+### 7.7. useSelector: "You must pass a selector to useSelector"
+
+**Qué pasaba:** En el componente se usaba algo como `useSelector((state) => useSelector(state.serie.searchQuery))` o se pasaba un valor en lugar de una función.
+
+**Por qué falla:** El primer argumento de `useSelector` debe ser **una función** que recibe `state` y **devuelve** el valor que quieres leer. No puedes llamar a `useSelector` dentro de esa función ni pasar el resultado de leer el estado (p. ej. `state.serie.searchQuery`) como argumento a otra llamada a `useSelector`.
+
+**Solución:** Una sola llamada, con un selector que devuelva el valor:
+
+```jsx
+// ❌ Incorrecto
+useSelector((state) => useSelector(state.serie.searchQuery));
+
+// ✅ Correcto
+const searchQuery = useSelector((state) => state.serie.searchQuery);
+```
+
+El selector es la función `(state) => state.serie.searchQuery`; Redux la invoca con el estado actual y usa el valor devuelto.
+
+### 7.8. El input del formulario no deja escribir
+
+**Qué pasaba:** Input controlado con `value={searchQuery}` y `onChange` que dispara una acción (p. ej. `setSearchQuery`); el usuario escribe pero el texto no aparece.
+
+**Causa:** En el reducer del slice, la acción que debería actualizar el campo de búsqueda estaba asignando **otra propiedad** por error (p. ej. `state.city = action.payload` al copiar de otra app). El componente lee `state.serie.searchQuery`, que nunca cambia porque el reducer no escribe en esa clave.
+
+**Solución:** En el reducer, asignar al **mismo campo** que lee el componente: `state.searchQuery = action.payload`. Revisa los nombres de las propiedades del estado cuando reutilices un slice de otra app (weather vs serie, etc.).
+
+### 7.9. Usar los datos devueltos por el thunk
+
+**Qué pasaba:** Se hace `const data = dispatch(fetchData(searchQuery))` esperando los datos, pero `data` es una **promesa**, no el resultado del API.
+
+**Opciones:**
+
+- **Si necesitas los datos en el mismo manejador** (p. ej. para redirigir o mostrar un mensaje según el resultado): haz la función del manejador `async` y usa **`.unwrap()`** sobre la promesa que devuelve `dispatch`. Así obtienes el valor con el que el thunk hizo `fulfilled` o se lanza si hizo `rejected`:
+
+```jsx
+const handleSearch = async () => {
+  try {
+    const data = await dispatch(fetchData(searchQuery)).unwrap();
+    // usar data aquí
+  } catch (e) {
+    // thunk fue rejected
+  }
+};
+```
+
+- **Si solo necesitas mostrarlos en la UI:** el thunk ya guarda en el store en `fulfilled`; los componentes deben **leer con useSelector** (p. ej. `state.serie.series`). No hace falta usar el valor de retorno de `dispatch`.
+
+### 7.10. La lista de resultados no se muestra
+
+Varias causas que dejan la lista vacía o rompen el `.map()`:
+
+**a) La API falla pero el thunk va a fulfilled con undefined.** Si cuando `!response.ok` en el thunk haces solo `return` o llamas a una función que no usa `rejectWithValue`, el thunk puede terminar en `fulfilled` con `undefined`. En el reducer haces `state.series = action.payload` y queda `state.series = undefined`; al hacer `series.map(...)` en el componente falla. **Solución:** En caso de error de API usar `return rejectWithValue(mensaje)` para que se dispare `rejected`.
+
+**b) Error de sintaxis en el thunk.** Si en éxito escribes `return data = await response.json()` con `data` no declarada, en modo estricto puede dar `ReferenceError` y el thunk va a rejected. **Solución:** `return await response.json();` o `const data = await response.json(); return data;`.
+
+**c) Payload no es un array.** En el fulfilled del extraReducer, asegura que la lista sea siempre un array: `state.series = Array.isArray(action.payload) ? action.payload : [];`.
+
+**d) Botón "Añadir a favoritos" sin payload.** Si haces `onClick={() => dispatch(addFavoriteSerie)}` en lugar de `onClick={() => dispatch(addFavoriteSerie(serie))}`, el reducer recibe `action.payload` undefined y puede romper o no guardar nada. **Solución:** Siempre pasar el objeto o id: `dispatch(addFavoriteSerie(serie))`, `dispatch(removeFavoriteSerie({ id: fav.id }))`.
+
+### 7.11. Favoritos no se persisten o se guarda el estado equivocado
+
+**Problema:** En el slice se llama a una función `saveFavoritesToStorage()` importada de otro archivo (p. ej. un `main.js` de una app en JS puro) que guarda en localStorage **su propio** estado, no el de Redux.
+
+**Solución:** En los reducers que modifican favoritos, guardar **desde el estado del slice**, justo después de actualizar `state.favorites`, usando una constante definida en el slice:
+
+```js
+const STORAGE_KEY = "favorite-series";
+
+reducers: {
+  addFavorite(state, action) {
+    state.favorites.push(action.payload);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state.favorites));
+  },
+  removeFavorite(state, action) {
+    state.favorites = state.favorites.filter(...);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state.favorites));
+  },
+},
+```
+
+El `initialState` del slice puede leer de localStorage al arrancar (como en [§0](#0-preparar-proyecto-y-archivos) y en el [ejemplo 20a](20a-ejemplo-mini-app-redux.md)).
+
+### 7.12. Rutas de importación en componentes
+
+Si los componentes están en `src/components/` y el slice en `src/redux/` (o `src/store/` / `src/features/`), la ruta desde un componente debe **subir** a la raíz de `src` y luego bajar al slice. Usar `./redux/serieSlice` da error "Cannot find module" porque `redux` no está **dentro** de `components`.
+
+```jsx
+// Desde src/components/SearchForm.jsx
+import { setSearchQuery } from "../redux/serieSlice";   // ✅
+// import { setSearchQuery } from "./redux/serieSlice"; // ❌
+```
+
+Ajusta `../` según la profundidad de la carpeta del componente (desde `src/components/SubCarpeta/` sería `../../redux/`).
+
+### 7.13. Botón "Next" (o similar) no hace nada al clic o siempre está deshabilitado
+
+**Clic no hace nada:** El handler debe ser una **función** que se ejecute al clic, no una invocación. Si escribes `onClick={dispatch(fetchNewQuestion())}`, el thunk se ejecuta **en cada render** y además pasas el valor de retorno de `dispatch` (una promesa) a `onClick`. **Solución:** `onClick={() => dispatch(fetchNewQuestion())}` para que el thunk solo se ejecute al hacer clic.
+
+**Siempre deshabilitado:** Comprueba que en el reducer de "elegir respuesta" se ponga `state.nextButtonDisabled = false` (para poder pulsar Next) y que en el **fulfilled** del thunk de "nueva pregunta" se ponga `state.nextButtonDisabled = true` (para deshabilitar hasta que responda). Si solo se deshabilita y nunca se vuelve a habilitar, el botón queda bloqueado.
+
+### 7.14. Imagen o datos null ("Cannot read properties of null")
+
+Si el estado puede ser `null` o un objeto sin alguna propiedad (p. ej. `selectedPokemon` o `selectedPokemon.sprite`), acceder sin comprobar provoca "Cannot read properties of null (reading 'sprite')".
+
+**Solución:** Usar **optional chaining** al leer del estado y **no renderizar** el elemento si no hay dato:
+
+```jsx
+const selectedPokemon = useSelector((state) => state.pokemon.selected);
+
+// ✅ Optional chaining y render condicional
+{selectedPokemon?.sprite && <img src={selectedPokemon.sprite} alt="" />}
+
+// O envolver el bloque
+{selectedPokemon && (
+  <div>
+    <img src={selectedPokemon.sprite} alt="" />
+    <p>{selectedPokemon.name}</p>
+  </div>
+)}
+```
+
+Así evitas intentar leer `.sprite` o `.name` cuando `selectedPokemon` es `null` o `undefined`. Si el estado inicial es `null`, es buena práctica mantenerlo hasta que los datos estén cargados.
 
 ---
 

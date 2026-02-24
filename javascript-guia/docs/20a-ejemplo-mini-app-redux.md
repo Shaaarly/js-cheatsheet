@@ -389,6 +389,8 @@ export default function Favorites() {
 
 Con esta mini app tienes un ejemplo de referencia que toca los puntos principales del [cap. 20](20-react-redux-bridge.md). Puedes copiar la estructura en un proyecto Vite + React e instalar `@reduxjs/toolkit` y `react-redux` para probarla.
 
+Si al adaptar el ejemplo algo no funciona (input que no escribe, lista que no se muestra, favoritos que no persisten, etc.), consulta la **[sección 7. Errores frecuentes y dudas habituales](20-react-redux-bridge.md#7-errores-frecuentes-y-dudas-habituales)** del cap. 20, donde se recogen soluciones a esos fallos.
+
 ---
 
 **[⬅ Volver al índice](../README.md)**
