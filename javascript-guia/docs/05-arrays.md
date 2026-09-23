@@ -2,6 +2,10 @@
 
 **[⬅ Volver al índice](../README.md)**
 
+**Primera pasada (ruta desde cero):** la sección [Índice, push, pop y for...of](#primera-pasada-índice-push-pop-y-forof). En la sección 3, solo `includes` e `indexOf` (no usan callback).
+
+**Segunda pasada:** la tabla de callbacks, el resto de la sección 2 (`splice`, `sort`, `reverse`, `fill`, `copyWithin`), `find` / `some` / `every` y la sección 4 (`map`, `filter`, `reduce`). Hace falta el [capítulo 7](07-functions.md): esos métodos reciben una función.
+
 ---
 
 ## Mini-índice del capítulo
@@ -29,7 +33,40 @@ En las tablas se indica **Muta** sí/no y **Devuelve** qué retorna cada método
 
 ---
 
-### Firma de los callbacks (qué recibe tu arrow function)
+## Primera pasada: índice, push, pop y for...of
+
+Un array es una lista ordenada. La primera posición es el índice `0`. `length` es cuántos elementos hay.
+
+```js
+const nombres = ["Ana", "Luis"];
+nombres[0];          // "Ana"
+nombres.length;      // 2
+
+nombres.push("Eva"); // añade al final; nombres es ["Ana", "Luis", "Eva"]
+const ultimo = nombres.pop(); // quita el final y lo devuelve: "Eva"
+```
+
+`for...of` recorre los valores, uno por uno:
+
+```js
+for (const nombre of nombres) {
+  console.log(nombre);
+}
+```
+
+`includes` responde si un valor está, con `===`. No recibe una función:
+
+```js
+[1, 2, 3].includes(2); // true
+```
+
+Con esto basta para la primera pasada. Lo que sigue (callbacks, `splice`, `sort`, `map`) es la segunda.
+
+---
+
+### Firma de los callbacks (segunda pasada)
+
+Qué recibe tu arrow function. Léelo después del [capítulo 7](07-functions.md).
 
 Cuando un método pide una **función** (arrow o no), esta es la **firma** que usa JavaScript. Saberlo evita dudas en el examen.
 
@@ -68,6 +105,8 @@ Cuando un método pide una **función** (arrow o no), esta es la **firma** que u
 ---
 
 ## 2. Mutadores: push, pop, shift, unshift, splice, sort, reverse, fill, copyWithin
+
+`push` y `pop` están en la primera pasada, arriba. Desde `splice` hasta `copyWithin` es segunda pasada o ruta de dominio.
 
 | Método | Muta | Devuelve | Complejidad | Uso típico |
 |--------|------|----------|-------------|------------|
@@ -129,6 +168,8 @@ a.fill(0);     // [0, 0, 0]
 
 ## 3. No mutadores: slice, concat, includes, indexOf, find, findIndex, some, every
 
+Primera pasada: `includes` e `indexOf`. `find`, `some` y `every` reciben un callback: segunda pasada, después del capítulo 7.
+
 | Método | Muta | Devuelve | Complejidad | Uso típico |
 |--------|------|----------|-------------|------------|
 | `slice(ini?, fin?)` | No | nuevo array | O(n) | Copia o subarray (fin no incluido) |
@@ -163,6 +204,8 @@ const hayEnviados = pedidos.some(p => p.estado === "enviado");
 ---
 
 ## 4. map, filter, reduce, flat, flatMap, join
+
+Segunda pasada. Cada método recibe la función que escribiste en el capítulo 7. En la ruta Playwright, `filter` se lee aquí, después de ese capítulo.
 
 | Método | Muta | Devuelve | Complejidad | Uso típico |
 |--------|------|----------|-------------|------------|
@@ -375,5 +418,7 @@ const suma = anidado.flat().reduce((a, n) => a + n, 0);
 </details>
 
 ---
+
+**Siguiente en la ruta desde cero:** [10 - Errores](10-error-handling.md)
 
 **[⬅ Volver al índice](../README.md)**

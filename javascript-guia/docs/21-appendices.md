@@ -27,7 +27,7 @@
 
 ## Tabla rápida de métodos (resumen)
 
-Ver **[Cheat sheet](cheatsheet.md)** para tablas completas de Arrays, Strings, Object y Promises. Para React: **[Cheatsheet HTML y CSS en React](react-cheatsheet-html-css.md)** (datalist, formularios, `style`, `className`).
+Ver **[Cheat sheet](cheatsheet.md)** para tablas completas de Arrays, Strings, Object, Promises y temporizadores. Para React: **[Cheatsheet HTML y CSS en React](react-cheatsheet-html-css.md)** (datalist, formularios, `style`, `className`). Para Playwright: **[cap. 24](24-puente-playwright.md)**.
 
 ---
 
@@ -44,13 +44,18 @@ Ver **[Cheat sheet](cheatsheet.md)** para tablas completas de Arrays, Strings, O
 | **Event loop** | Mecanismo que ejecuta tareas: call stack, cola de microtasks, cola de macrotasks. |
 | **Hoisting** | "Elevación" de declaraciones (var, function) al inicio de su scope. |
 | **Inmutabilidad** | No modificar datos en sitio; crear copias para cambios. |
+| **Locator** | Receta de Playwright para encontrar un elemento en el momento de usarlo (`getByRole`, `getByLabel`). No es el nodo que devuelve `querySelector`. |
 | **Microtask** | Tarea con prioridad sobre macrotasks (then/catch/finally de promesas, queueMicrotask). |
 | **Mutador** | Método que modifica el objeto/array original (ej. push, sort, splice). |
 | **Pure function** | Misma entrada → misma salida; sin efectos secundarios ni mutación. |
+| **Promesa** | Valor futuro: pendiente, cumplida o rechazada. Se consume con `then`/`catch` o con `await`. |
 | **Provider** | Componente de React-Redux que recibe el store y lo inyecta en el árbol; envuelve la app en `main.jsx`. |
 | **Reducer** | Función (state, action) => newState; pura; usada en Redux. |
 | **Scope** | Ámbito donde una variable es visible (global, función, bloque). |
 | **Slice** | En Redux Toolkit: porción de estado + reducers + acciones generadas; se combina en `configureStore`. |
+| **Temporizador** | `setTimeout` / `setInterval`: programan una función. El id se cancela con `clearTimeout` / `clearInterval`. |
+| **Timeout de operación** | Plazo para abortar un `fetch` (`AbortSignal.timeout` → `TimeoutError`) o el límite de un test de Playwright (test, expect, acción, navegación). No es `setTimeout`. |
+| **Timeout de Playwright** | Tiempo máximo del test (30 s), de `expect` (5 s) o de una acción. Si se cumple, el test falla. Ver cap. 24. |
 | **TDZ** | Temporal Dead Zone: zona donde let/const no son accesibles hasta su línea de declaración. |
 | **Thunk** | Función que devuelve una función (en Redux: async thunk para side effects y dispatch). |
 | **Truthy/Falsy** | Valores que se evalúan como true/false en contextos booleanos. |
@@ -85,8 +90,10 @@ Crear proyecto dentro de la carpeta actual: `npm create vite@latest . -- --templ
 
 ## Recursos (opcional)
 
-- **MDN (JavaScript)**: documentación de referencia de la Web.
+- **MDN (JavaScript)**: documentación de referencia de la Web. Timers: [setTimeout](https://developer.mozilla.org/en-US/docs/Web/API/Window/setTimeout).
 - **ECMAScript**: especificación del lenguaje; para profundizar en comportamiento.
+- **TypeScript**: [handbook](https://www.typescriptlang.org/docs/handbook/intro.html). En esta guía, [cap. 22](22-typescript-fundamentos.md) y [cap. 23](23-typescript-funciones-clases.md).
+- **Playwright**: [instalación](https://playwright.dev/docs/intro), [tests](https://playwright.dev/docs/writing-tests), [timeouts](https://playwright.dev/docs/test-timeouts). Puente de lenguaje: [cap. 24](24-puente-playwright.md).
 - **Redux**: documentación oficial y Redux Toolkit para thunks y slices.
 - **React**: documentación oficial; hooks y "Thinking in React" para estado y flujo de datos.
 

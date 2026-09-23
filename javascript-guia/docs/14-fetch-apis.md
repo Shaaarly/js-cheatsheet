@@ -20,6 +20,18 @@
 
 ## 1. fetch básico y métodos HTTP
 
+### JSON en una página
+
+`fetch` habla en texto. JSON es ese texto con forma de objeto o array. En la ruta desde cero esto llega antes que el [capítulo 17](17-storage-browser.md), que lo amplía.
+
+```js
+const pedido = { id: "a1", total: 20 };
+const texto = JSON.stringify(pedido); // '{"id":"a1","total":20}'
+const otraVez = JSON.parse(texto);    // { id: "a1", total: 20 }
+```
+
+`JSON.stringify` convierte un valor de JavaScript en string. `JSON.parse` hace el camino inverso y lanza si el texto no es JSON. `res.json()` en un `fetch` llama a `parse` por ti.
+
 **fetch(url, options?)**: devuelve una **Promise** que se cumple con un objeto **Response**. No rechaza por 404/500; hay que comprobar `response.ok` o `response.status`. Solo rechaza por fallo de red (sin conexión, CORS bloqueado, etc.).
 
 - **GET**: por defecto (sin body). Para leer recursos.
@@ -96,7 +108,9 @@ async function api(url, options = {}) {
 
 ## 4. AbortController y timeout
 
-**AbortController** permite cancelar un fetch. Se pasa `signal` en options; al llamar `controller.abort()`, la promesa de fetch se rechaza con AbortError.
+Los timers (`setTimeout`, `clearTimeout`) están en [07b](07b-temporizadores.md). Aquí el timer sirve para **cancelar un fetch** si tarda demasiado. Hay dos formas.
+
+**AbortController** permite cancelar un fetch. Se pasa `signal` en options; al llamar `controller.abort()`, la promesa de fetch se rechaza con `AbortError`. Un `setTimeout` llama a `abort` a los 5 segundos y `clearTimeout` evita el aviso si la respuesta llegó antes.
 
 ```js
 const controller = new AbortController();
@@ -112,6 +126,31 @@ try {
   clearTimeout(timeout);
 }
 ```
+
+**AbortSignal.timeout(ms)** crea esa señal ya temporizada. No hace falta guardar un id ni llamar a `clearTimeout`. Si vence el plazo, `fetch` rechaza con un `DOMException` cuyo `name` es `"TimeoutError"`. Si alguien aborta por otra vía (botón de parar del navegador, otro `AbortController`), el nombre es `"AbortError"`.
+
+```js
+try {
+  const res = await fetch(url, { signal: AbortSignal.timeout(5000) });
+  if (!res.ok) throw new Error(String(res.status));
+  return await res.json();
+} catch (e) {
+  if (e.name === "TimeoutError") {
+    console.error("tardó más de 5 segundos");
+  } else if (e.name === "AbortError") {
+    console.error("cancelado por el usuario");
+  } else {
+    throw e;
+  }
+}
+```
+
+Referencia: [AbortSignal.timeout()](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal/timeout_static).
+
+| Señal | Quién la crea | Error si aborta por tiempo |
+|-------|----------------|----------------------------|
+| `controller.signal` + `setTimeout` | Tú llamas a `abort()` | `AbortError` (tú conviertes el mensaje a "Timeout") |
+| `AbortSignal.timeout(ms)` | El plazo vence solo | `TimeoutError` |
 
 ---
 
@@ -153,6 +192,7 @@ async function fetchConReintento(url, max = 3) {
 - **POST/PUT/PATCH**: enviar `body` como string con `JSON.stringify` y header `Content-Type: application/json`.
 - **CORS**: si la API está en otro origen, el servidor debe enviar cabeceras CORS correctas; fetch en el cliente no las evita.
 - **AbortController**: un mismo signal puede usarse para varios fetch; abort() cancela todos.
+- **AbortSignal.timeout** rechaza con `TimeoutError`. El `abort()` manual rechaza con `AbortError`.
 
 ---
 
@@ -163,6 +203,7 @@ async function fetchConReintento(url, max = 3) {
 - [ ] POST/PUT/PATCH: Content-Type: application/json y body: JSON.stringify(...).
 - [ ] res.json() / res.text() consumen el body una sola vez.
 - [ ] AbortController + signal para cancelar o implementar timeout.
+- [ ] AbortSignal.timeout(ms) distingue `TimeoutError` de `AbortError`.
 
 ---
 
@@ -185,6 +226,7 @@ La **[PokeAPI](https://pokeapi.co/)** es una API REST pública, sin API key. Bas
 10. **Timeout con AbortController**: función `fetchPokemonConTimeout(id, ms)` que haga GET a `.../pokemon/{id}/` con timeout de `ms`; si expira, rechaza con `Error("Timeout")`. Usa AbortController + setTimeout + signal.
 11. **Paginación**: obtén la "página 2" de Pokémon (los siguientes 20 después de los primeros 20). Usa `offset=20&limit=20`. Muestra los nombres del array `results`.
 12. **Helper para PokeAPI**: función `pokeApi(path)` que haga GET a `https://pokeapi.co/api/v2/${path}`, compruebe `res.ok`, devuelva `res.json()` o lance `Error(res.status)`. Ejemplo de uso: `pokeApi("pokemon/1")` o `pokeApi("pokemon?limit=5")`.
+13. **Timeout con AbortSignal.timeout**: función `fetchPokemonConPlazo(id, ms)` que haga GET a `.../pokemon/{id}/` con `signal: AbortSignal.timeout(ms)`. Si el error es `TimeoutError`, lanza `Error("Timeout")`. Si es otro error, relánzalo.
 
 ---
 
@@ -339,6 +381,27 @@ async function pokeApi(path) {
 ```
 </details>
 
+<details>
+<summary>13. PokeAPI: AbortSignal.timeout</summary>
+
+```js
+async function fetchPokemonConPlazo(id, ms) {
+  try {
+    const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}/`, {
+      signal: AbortSignal.timeout(ms)
+    });
+    if (!res.ok) throw new Error(String(res.status));
+    return await res.json();
+  } catch (e) {
+    if (e.name === "TimeoutError") throw new Error("Timeout");
+    throw e;
+  }
+}
+```
+</details>
+
 ---
+
+**Siguiente en la ruta desde cero:** [15 - DOM](15-dom.md)
 
 **[⬅ Volver al índice](../README.md)**

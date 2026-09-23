@@ -2,6 +2,10 @@
 
 **[⬅ Volver al índice](../README.md)**
 
+**Primera lectura (ruta desde cero):** secciones 1, 2 (`let` y `const`), 3 (aritméticos, comparación con `===`, lógicos y ternario) y 4 (`if` y bucles).
+
+**Ruta de dominio:** `var`, hoisting y TDZ en la sección 2; `??` y `?.` en la sección 3.
+
 ---
 
 ## Mini-índice del capítulo
@@ -39,27 +43,9 @@ if (total > 0) {
 
 ## 2. Variables: var, let y const
 
-| Palabra | Scope | Reasignación | Redeclaración (mismo scope) | Hoisting |
-|---------|--------|--------------|-----------------------------|----------|
-| `var`   | función | Sí | Sí | Sí (valor `undefined`) |
-| `let`   | bloque | Sí | No | Sí (TDZ hasta la línea) |
-| `const` | bloque | No (referencia) | No | Sí (TDZ hasta la línea) |
-
-- **Scope de bloque**: `let` y `const` viven solo dentro del `{ }` donde se declaran (if, for, while, función, etc.).
-- **const**: la variable no se puede reasignar; el valor interno (objeto/array) sí puede mutarse salvo que sea primitivo o esté congelado.
+En la primera lectura usa `let` y `const`. `const` cuando el nombre no va a apuntar a otro valor; `let` cuando sí (un contador, un total). Las dos viven solo dentro del `{ }` donde se declaran.
 
 ```js
-// var: scope de función, hoisting
-function ejemploVar() {
-  console.log(x); // undefined (hoisting)
-  var x = 10;
-  if (true) {
-    var x = 20; // misma variable
-  }
-  console.log(x); // 20
-}
-
-// let: scope de bloque
 function ejemploLet() {
   let x = 10;
   if (true) {
@@ -69,13 +55,33 @@ function ejemploLet() {
   console.log(x); // 10
 }
 
-// const: no reasignar; el objeto sí puede mutarse
 const config = { apiUrl: "https://api.example.com" };
-config.apiUrl = "https://other.com"; // ✅ válido
-// config = {}; // ❌ Error
+config.apiUrl = "https://other.com"; // el objeto se puede cambiar
+// config = {}; // Error: no se puede reasignar el nombre
 ```
 
-**Uso recomendado**: `const` por defecto; `let` cuando necesites reasignar; evitar `var` en código nuevo.
+### Ruta de dominio: var, hoisting y TDZ
+
+`var` es de código antiguo. Se ve en exámenes. No lo uses en código nuevo.
+
+| Palabra | Scope | Reasignación | Redeclaración (mismo scope) | Hoisting |
+|---------|--------|--------------|-----------------------------|----------|
+| `var`   | función | Sí | Sí | Sí (valor `undefined`) |
+| `let`   | bloque | Sí | No | Sí (TDZ hasta la línea) |
+| `const` | bloque | No (referencia) | No | Sí (TDZ hasta la línea) |
+
+```js
+function ejemploVar() {
+  console.log(x); // undefined (hoisting)
+  var x = 10;
+  if (true) {
+    var x = 20; // misma variable
+  }
+  console.log(x); // 20
+}
+```
+
+La TDZ (temporal dead zone) es el tramo en el que `let` o `const` ya existen en el bloque pero todavía no se pueden leer, hasta la línea en la que se declaran. El detalle está en el [capítulo 8](08-scope-hoisting-this.md).
 
 ---
 
@@ -112,9 +118,9 @@ const name = user && user.name;
 ```
 
 ### Otros
-- **Ternario**: `condición ? valorSiTrue : valorSiFalse`.
-- **Nullish coalescing** (`??`): devuelve el operando derecho solo si el izquierdo es `null` o `undefined`.
-- **Optional chaining** (`?.`): accede a propiedad o llama a función solo si el valor previo no es null/undefined.
+- **Ternario**: `condición ? valorSiTrue : valorSiFalse`. El ternario entra en la primera lectura.
+- **Nullish coalescing** (`??`), ruta de dominio: devuelve el operando derecho solo si el izquierdo es `null` o `undefined`.
+- **Optional chaining** (`?.`), ruta de dominio: accede a propiedad o llama a función solo si el valor previo no es null/undefined.
 
 ```js
 const precio = producto?.precio ?? 0;
@@ -327,5 +333,7 @@ console.log(suma); // 10 + 30 + 50 = 90
 </details>
 
 ---
+
+**Siguiente en la ruta desde cero:** [02 - Tipos](02-types-coercion.md)
 
 **[⬅ Volver al índice](../README.md)**

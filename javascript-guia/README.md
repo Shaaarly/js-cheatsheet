@@ -1,27 +1,10 @@
-# Guía completa de JavaScript para DAW <a id="inicio"></a>
+# Índice de capítulos <a id="inicio"></a>
 
-Guía técnica de JavaScript desde cero hasta nivel avanzado: tipos, estructuras, funciones, objetos, arrays, módulos, DOM, eventos, fetch, promesas, async/await, errores, patrones comunes; **React desde cero** (componentes, estado, mini apps) y **React + Redux** (reducers, async thunks).
+Listado de toda la guía. Qué ruta seguir, qué se aprende en cada una y en qué orden leer está en la [guía de rutas](../README.md).
 
-**Contenido de esta página:** [Cómo usar esta guía](#cómo-usar-esta-guía) · [Índice maestro](#índice-maestro-table-of-contents) · [Referencia rápida](#referencia-rápida) · [Mapa de navegación por tema](#mapa-de-navegación-por-tema) · [Convenciones](#convenciones-de-la-guía)
+Los capítulos enlazan aquí con «Volver al índice». Varios abren con un aviso de primera lectura: esas secciones son las de la ruta desde cero; el resto es dominio o React.
 
----
-
-## Cómo usar esta guía
-
-### Ruta rápida para examen
-1. **[01 - Fundamentos](docs/01-basics.md)** → variables, operadores, control de flujo  
-2. **[02 - Tipos y coerción](docs/02-types-coercion.md)** → primitives vs reference, `==` vs `===`, truthy/falsy  
-3. **[05 - Arrays](docs/05-arrays.md)** → métodos mutadores y no mutadores, pipelines  
-4. **[07 - Funciones](docs/07-functions.md)** → declarations, arrow, closures, HOF  
-5. **[08 - Scope, hoisting y this](docs/08-scope-hoisting-this.md)** → lexical scope, `this`, bind/call/apply  
-6. **[12 - Promesas](docs/12-promises.md)**, **[13 - Async/Await](docs/13-async-await.md)** y **[14 - Fetch y APIs](docs/14-fetch-apis.md)** — con **ejercicios usando la [PokeAPI](https://pokeapi.co/)** para practicar con datos reales (sin API key).  
-7. **[18 - Testing mental para examen](docs/18-exam-mental-test.md)** → ejercicios tipo examen  
-8. **[19 - React desde cero](docs/19-react-desde-cero.md)** → componentes, estado, efectos; mini apps  
-9. **[20 - Puente a React + Redux](docs/20-react-redux-bridge.md)** → reducers, async thunks (opcional)  
-10. **[Cheat sheet](docs/cheatsheet.md)** → tabla rápida de métodos  
-
-### Ruta larga (estudio completo)
-Sigue el índice maestro en orden. Cada capítulo incluye ejemplos, trampas de examen, checklist y mini-ejercicios. En los capítulos de asincronía (12, 13, 14) hay ejercicios extra con PokeAPI.
+**Contenido de esta página:** [Índice maestro](#índice-maestro-table-of-contents) · [Referencia rápida](#referencia-rápida) · [Mapa de navegación por tema](#mapa-de-navegación-por-tema) · [Convenciones](#convenciones-de-la-guía)
 
 ---
 
@@ -31,7 +14,8 @@ Sigue el índice maestro en orden. Cada capítulo incluye ejemplos, trampas de e
 
 | # | Capítulo | Descripción |
 |---|----------|-------------|
-| 0 | [Cómo usar esta guía](#cómo-usar-esta-guía) | Ruta rápida y ruta larga |
+| 0 | [Guía de rutas](../README.md) | Para quién es cada ruta, objetivos y recomendaciones |
+| 00 | [00 - Entorno y primer programa](docs/00-entorno-y-primer-programa.md) | Consola, Node y `<script>` |
 | 1 | [01 - Fundamentos](docs/01-basics.md) | Sintaxis, variables, operadores, control de flujo |
 | 2 | [02 - Tipos y coerción](docs/02-types-coercion.md) | Primitives vs reference, truthy/falsy, `==` vs `===` |
 | 3 | [03 - Strings](docs/03-strings.md) | Métodos y casos reales |
@@ -49,7 +33,9 @@ Sigue el índice maestro en orden. Cada capítulo incluye ejemplos, trampas de e
 | # | Capítulo | Descripción |
 |---|----------|-------------|
 | 7 | [07 - Funciones](docs/07-functions.md) | Declarations, expressions, arrow, closures, HOF |
+| 07b | [07b - Temporizadores](docs/07b-temporizadores.md) | setTimeout, setInterval, delay, debounce |
 | 8 | [08 - Scope, hoisting y this](docs/08-scope-hoisting-this.md) | Lexical scope, block scope, `this`, bind/call/apply |
+| 08b | [08b - Map, Set y regex](docs/08b-map-set-regex.md) | Colecciones y expresiones regulares mínimas |
 
 ### Parte IV — Módulos y errores <a id="parte-iv"></a>
 
@@ -85,6 +71,14 @@ Sigue el índice maestro en orden. Cada capítulo incluye ejemplos, trampas de e
 | 20a | [20a - Ejemplo completo React + Redux](docs/20a-ejemplo-mini-app-redux.md) | Mini app de referencia: store, 2 slices, thunk, selectores, localStorage |
 | 21 | [21 - Apéndices](docs/21-appendices.md) | Tabla rápida, glosario, recursos |
 
+### Parte VIII — TypeScript y Playwright <a id="parte-viii"></a>
+
+| # | Capítulo | Descripción |
+|---|----------|-------------|
+| 22 | [22 - TypeScript desde JS](docs/22-typescript-fundamentos.md) | Anotaciones, uniones, estrechamiento, unknown |
+| 23 | [23 - Funciones, clases y genéricos](docs/23-typescript-funciones-clases.md) | Promise, clases, import type, test.extend |
+| 24 | [24 - Puente a Playwright](docs/24-puente-playwright.md) | Un test, locators, timeouts y un page object |
+
 ### Referencia rápida
 
 | Recurso | Enlace |
@@ -102,6 +96,8 @@ Sigue el índice maestro en orden. Cada capítulo incluye ejemplos, trampas de e
 - **Arrays (mutar vs no mutar)** → [05](docs/05-arrays.md), [cheatsheet](docs/cheatsheet.md)  
 - **Objetos y clases** → [06](docs/06-objects.md)  
 - **Funciones y closures** → [07](docs/07-functions.md), [08](docs/08-scope-hoisting-this.md)  
+- **Temporizadores** → [07b](docs/07b-temporizadores.md)  
+- **Map, Set y regex** → [08b](docs/08b-map-set-regex.md)  
 - **Módulos** → [09](docs/09-modules.md)  
 - **Errores** → [10](docs/10-error-handling.md)  
 - **Async: Event Loop, Promesas, Async/Await** → [11](docs/11-async-event-loop.md), [12](docs/12-promises.md), [13](docs/13-async-await.md)  
@@ -110,6 +106,8 @@ Sigue el índice maestro en orden. Cada capítulo incluye ejemplos, trampas de e
 - **Storage** → [17](docs/17-storage-browser.md)  
 - **Examen** → [18](docs/18-exam-mental-test.md)  
 - **React** → [19](docs/19-react-desde-cero.md) · **React/Redux** → [20](docs/20-react-redux-bridge.md) · **Ejemplo completo Redux** → [20a](docs/20a-ejemplo-mini-app-redux.md)  
+- **TypeScript** → [22](docs/22-typescript-fundamentos.md), [23](docs/23-typescript-funciones-clases.md)  
+- **Playwright** → [24](docs/24-puente-playwright.md)  
 
 ---
 

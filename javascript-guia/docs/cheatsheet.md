@@ -104,6 +104,23 @@
 
 *Ejemplos completos: ver [cap. 12 - Promesas](12-promises.md) y [cap. 13 - Async/await](13-async-await.md).*
 
+**Timeout de una petición:** [AbortSignal.timeout(ms)](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal/timeout_static) rechaza el `fetch` con `TimeoutError`. `AbortController` + `setTimeout` rechaza con `AbortError`. Detalle en [cap. 14](14-fetch-apis.md).
+
+---
+
+## Temporizadores
+
+| Método | Qué hace | Cancelar |
+|--------|----------|----------|
+| **setTimeout(fn, ms)** | Ejecuta `fn` una vez, no antes de `ms` | `clearTimeout(id)` |
+| **setInterval(fn, ms)** | Ejecuta `fn` cada `ms` | `clearInterval(id)` |
+| **delay(ms)** | Promesa que se cumple tras `ms`: `new Promise((resolve) => setTimeout(resolve, ms))` | guardar el id y `clearTimeout` |
+| **AbortSignal.timeout(ms)** | Señal que aborta sola al vencer el plazo | no se cancela; distingue `TimeoutError` |
+
+El retardo es un mínimo. Pasa una función, no un string. El timeout de un test de Playwright no es esta tabla: ver [cap. 24](24-puente-playwright.md).
+
+*Ejemplos completos: [cap. 7b - Temporizadores](07b-temporizadores.md).*
+
 ---
 
 ## Referencia rápida: mutar vs no mutar (Arrays)

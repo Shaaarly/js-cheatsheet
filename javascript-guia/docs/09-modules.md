@@ -213,4 +213,6 @@ export { formatoMoneda, formatoFecha } from "./format.js";
 
 ---
 
+**Siguiente en la ruta desde cero:** [07b - Temporizadores](07b-temporizadores.md)
+
 **[⬅ Volver al índice](../README.md)**

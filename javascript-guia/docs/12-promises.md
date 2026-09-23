@@ -2,6 +2,10 @@
 
 **[⬅ Volver al índice](../README.md)**
 
+**Primera lectura:** secciones 1 y 2 (`new Promise`, `then`, `catch`, `finally`) y el `delay` del [capítulo 7b](07b-temporizadores.md).
+
+**Después:** sección 3 (`Promise.all`, `allSettled`, `race`, `any`) y los ejercicios con PokeAPI. `race` es el patrón del timeout; el timer en sí está en 07b.
+
 ---
 
 ## Mini-índice del capítulo
@@ -452,5 +456,7 @@ fetch("https://pokeapi.co/api/v2/pokemon?limit=1")
 </details>
 
 ---
+
+**Siguiente en la ruta desde cero:** [13 - Async/Await](13-async-await.md)
 
 **[⬅ Volver al índice](../README.md)**

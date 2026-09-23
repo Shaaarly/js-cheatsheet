@@ -2,6 +2,10 @@
 
 **[⬅ Volver al índice](../README.md)**
 
+**Primera lectura (ruta desde cero):** secciones 1 y 2 (declaración, arrow, parámetros, rest). Con la arrow ya puedes escribir el callback de `map` y `filter`.
+
+**Ruta de dominio:** secciones 3 y 4 (closures, currying, HOF) y el ejercicio 6, que usa `var` y `setTimeout`. El timer se explica en [07b](07b-temporizadores.md), más adelante en la ruta.
+
 ---
 
 ## Mini-índice del capítulo
@@ -79,7 +83,7 @@ function log(fmt, ...args) {
 
 ## 3. Closures
 
-Una **closure** es una función que “recuerda” las variables del ámbito donde se creó, aunque ese ámbito ya haya terminado de ejecutarse.
+**Ruta de dominio.** Una **closure** es una función que “recuerda” las variables del ámbito donde se creó, aunque ese ámbito ya haya terminado de ejecutarse.
 
 ```js
 function contador(inicial) {
@@ -118,7 +122,7 @@ En exámenes: identificar qué valor “ve” la función interna (el de la clos
 
 ## 4. Currying (mínimo) y higher-order functions
 
-**Currying**: función que recibe argumentos de uno en uno y devuelve otra función hasta completar.
+**Ruta de dominio.** **Currying**: función que recibe argumentos de uno en uno y devuelve otra función hasta completar.
 ```js
 const sumar = (a) => (b) => a + b;
 sumar(2)(3); // 5
@@ -164,7 +168,7 @@ function once(fn) {
 3. Implementa `mayorQue(limite)` que devuelva una función (elem) => elem > limite. Úsala para filtrar un array de números.
 4. Función que reciba un número variable de argumentos y devuelva el máximo (usando rest y Math.max).
 5. Escribe una HOF `mapWith(fn)` que reciba una función y devuelva una función que, dado un array, devuelva arr.map(fn).
-6. ¿Qué imprime este código? Razona con closures.
+6. **Ruta de dominio.** ¿Qué imprime este código? Usa `var` y `setTimeout` ([07b](07b-temporizadores.md)).
 ```js
 for (var i = 1; i <= 3; i++) {
   setTimeout(() => console.log(i), 100);
@@ -230,5 +234,7 @@ Imprime 4, 4, 4. `var i` es una sola variable compartida; cuando se ejecutan los
 </details>
 
 ---
+
+**Siguiente en la ruta desde cero:** [03 - Strings](03-strings.md)
 
 **[⬅ Volver al índice](../README.md)**

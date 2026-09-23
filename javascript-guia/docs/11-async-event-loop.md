@@ -2,6 +2,10 @@
 
 **[⬅ Volver al índice](../README.md)**
 
+**Orden en la ruta desde cero:** lee antes [07b - Temporizadores](07b-temporizadores.md), [12 - Promesas](12-promises.md) y [13 - Async/Await](13-async-await.md). Este capítulo explica en qué orden se ejecutan el código síncrono, las promesas y los timers.
+
+En la ruta Playwright es opcional.
+
 ---
 
 ## Mini-índice del capítulo
@@ -153,5 +157,7 @@ Se ejecuta en el mismo “tick” de microtasks: cuando se vacía la cola de mic
 </details>
 
 ---
+
+**Siguiente en la ruta desde cero:** [14 - Fetch](14-fetch-apis.md)
 
 **[⬅ Volver al índice](../README.md)**

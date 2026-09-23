@@ -2,6 +2,10 @@
 
 **[⬅ Volver al índice](../README.md)**
 
+**Primera lectura:** secciones 1 y 3 (`async`/`await` y `try/catch`).
+
+**Después:** sección 2 (secuencial frente a paralelo, cuando ya conozcas `Promise.all` del capítulo 12), los patrones y los ejercicios con PokeAPI.
+
 ---
 
 ## Mini-índice del capítulo
@@ -359,5 +363,7 @@ async function getPokemonsSettled(ids) {
 </details>
 
 ---
+
+**Siguiente en la ruta desde cero:** [11 - Event loop](11-async-event-loop.md)
 
 **[⬅ Volver al índice](../README.md)**

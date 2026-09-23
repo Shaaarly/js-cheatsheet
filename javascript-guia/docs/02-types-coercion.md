@@ -2,6 +2,10 @@
 
 **[⬅ Volver al índice](../README.md)**
 
+**Primera lectura:** secciones 1, 2, 3 y 5 (primitivos, valor y referencia, truthy/falsy, `typeof`). Usa `===`.
+
+**Ruta de dominio:** sección 4, coerción y `==`.
+
 ---
 
 ## Mini-índice del capítulo
@@ -207,5 +211,7 @@ function esObjetoVacio(obj) {
 </details>
 
 ---
+
+**Siguiente en la ruta desde cero:** [07 - Funciones](07-functions.md)
 
 **[⬅ Volver al índice](../README.md)**

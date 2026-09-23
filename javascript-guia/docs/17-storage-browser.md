@@ -110,6 +110,8 @@ localStorage.removeItem("token");
 
 ## 5. De JS básico a React: uso de storage
 
+**Ruta 5 (React).** En la ruta desde cero puedes saltar esta sección y seguir en la 6.
+
 La **API es la misma**: `localStorage.getItem`, `setItem`, `removeItem`, `JSON.stringify`/`JSON.parse`. En React lo que cambia es **dónde y cuándo** llamarla para no romper el ciclo de render ni causar problemas si más adelante usas SSR.
 
 **Cuándo leer:**
@@ -239,5 +241,7 @@ window.addEventListener("storage", (e) => {
 </details>
 
 ---
+
+**Fin de la ruta desde cero.** El capítulo 18 cierra la ruta de dominio (examen DAW). React empieza en el [capítulo 19](19-react-desde-cero.md), después de esta ruta o del atajo de examen.
 
 **[⬅ Volver al índice](../README.md)**

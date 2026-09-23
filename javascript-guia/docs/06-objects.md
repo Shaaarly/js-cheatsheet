@@ -2,6 +2,10 @@
 
 **[⬅ Volver al índice](../README.md)**
 
+**Primera lectura:** secciones 1 a 3 (CRUD, `Object.keys` / `values` / `entries`, spread y desestructuración `const { id } = obj`, el mismo mecanismo que `{ page }` en un test).
+
+**Ruta de dominio:** secciones 4 y 5 (prototipos y clases). La ruta Playwright retoma la sección 5 para un page object.
+
 ---
 
 ## Mini-índice del capítulo
@@ -108,6 +112,18 @@ const nuevoPedido = { ...pedido, estado: "pagado", fechaPago: new Date().toISOSt
 ```
 
 **Copia profunda** (estándar): `structuredClone(obj)`.
+
+**Desestructuración** (primera lectura): saca propiedades a variables. Es el mismo mecanismo que `async ({ page }) =>` en un test.
+
+```js
+const pedido = { id: "a1", total: 20, estado: "pendiente" };
+const { id, total } = pedido;
+console.log(id, total); // "a1" 20
+
+const { estado, ...resto } = pedido;
+// estado === "pendiente"
+// resto === { id: "a1", total: 20 } — el original no cambia
+```
 
 ---
 
@@ -261,5 +277,7 @@ class LineaPedido {
 </details>
 
 ---
+
+**Siguiente en la ruta desde cero:** [05 - Arrays](05-arrays.md)
 
 **[⬅ Volver al índice](../README.md)**

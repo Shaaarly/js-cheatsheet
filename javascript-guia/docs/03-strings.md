@@ -225,4 +225,6 @@ String(n).padStart(5, "0")
 
 ---
 
+**Siguiente en la ruta desde cero:** [04 - Numbers](04-numbers-math-dates.md)
+
 **[⬅ Volver al índice](../README.md)**

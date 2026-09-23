@@ -113,6 +113,8 @@ campo.addEventListener("input", (e) => {
 
 ## 6. De JS básico a React: cómo cambian los eventos
 
+**Ruta 5 (React).** En la ruta desde cero puedes saltar esta sección y seguir en la 7.
+
 En **JS en el DOM** registras listeners con `addEventListener` o con la propiedad `onclick`; en **React** usas **props** con nombres en **camelCase** y pasas una **función** (no una invocación). Esta tabla sirve de referencia para consultar la equivalencia.
 
 | JS (DOM) | React (JSX) | Notas |
@@ -235,5 +237,7 @@ select.addEventListener("change", (e) => {
 </details>
 
 ---
+
+**Siguiente en la ruta desde cero:** [17 - Storage](17-storage-browser.md)
 
 **[⬅ Volver al índice](../README.md)**

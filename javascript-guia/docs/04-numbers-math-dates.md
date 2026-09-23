@@ -2,6 +2,10 @@
 
 **[⬅ Volver al índice](../README.md)**
 
+**Primera lectura:** secciones 1 a 3 (numbers, parseo y `Math`).
+
+**Ampliación (ruta de dominio):** secciones 4 y 5 (`Intl` y `Date`).
+
 ---
 
 ## Mini-índice del capítulo
@@ -453,5 +457,7 @@ Math.floor(ms / (24 * 60 * 60 * 1000));
 </details>
 
 ---
+
+**Siguiente en la ruta desde cero:** [06 - Objetos](06-objects.md)
 
 **[⬅ Volver al índice](../README.md)**
